@@ -14,8 +14,26 @@ typedef void(^JFTransportableCompletionHandler)(id<NSObject> responseModel, NSEr
 
 @interface JFTransporter : NSObject
 
+/**
+ * @return The default transporter. This should be used for most situations/requests.
+ */
 + (instancetype)defaultTransporter;
-+ (JFTransportableOperation*)transport:(id<JFTransportable>)transportable withCompletionHandler:(JFTransportableCompletionHandler)completionHandler;
-+ (BOOL)cancel:(id<JFTransportable>)transportable;
+
+// GET
+- (JFTransportableOperation*)GETTransportable:(id<JFTransportable>)transportable withCompletionHandler:(JFTransportableCompletionHandler)completionHandler;
+
+// POST
+- (JFTransportableOperation*)POSTTransportable:(id<JFTransportable>)transportable withCompletionHandler:(JFTransportableCompletionHandler)completionHandler;
+
+// PUT
+- (JFTransportableOperation*)PUTTransportable:(id<JFTransportable>)transportable withCompletionHandler:(JFTransportableCompletionHandler)completionHandler;
+
+// PATCH
+- (JFTransportableOperation*)PATCHTransportable:(id<JFTransportable>)transportable withCompletionHandler:(JFTransportableCompletionHandler)completionHandler;
+
+// DELETE
+- (JFTransportableOperation*)DELETETransportable:(id<JFTransportable>)transportable withCompletionHandler:(JFTransportableCompletionHandler)completionHandler;
+
+- (BOOL)cancel:(id<JFTransportable>)transportable;
 
 @end
