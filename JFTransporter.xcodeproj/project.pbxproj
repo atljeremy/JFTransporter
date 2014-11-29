@@ -9,10 +9,10 @@
 /* Begin PBXBuildFile section */
 		1A3B5A011A29097F0050545F /* libJFTransporter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A3B59F51A29097F0050545F /* libJFTransporter.a */; };
 		1A3B5A151A290B7F0050545F /* JFTransportableOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A3B5A141A290B7F0050545F /* JFTransportableOperation.m */; };
-		1A3B5A171A290BF40050545F /* JFTransportable.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A3B5A101A290A1B0050545F /* JFTransportable.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		1A3B5A181A290BF90050545F /* JFTransportableOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A3B5A131A290B7F0050545F /* JFTransportableOperation.h */; };
-		1A3B5A1B1A2910230050545F /* JFTransporter.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A3B5A191A2910230050545F /* JFTransporter.h */; };
 		1A3B5A1C1A2910230050545F /* JFTransporter.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A3B5A1A1A2910230050545F /* JFTransporter.m */; };
+		3F129C271A2A170D00DBCE27 /* JFTransportableOperation.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1A3B5A131A290B7F0050545F /* JFTransportableOperation.h */; };
+		3F129C281A2A170D00DBCE27 /* JFTransporter.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1A3B5A191A2910230050545F /* JFTransporter.h */; };
+		3F129C291A2A170D00DBCE27 /* JFTransportable.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1A3B5A101A290A1B0050545F /* JFTransportable.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -32,6 +32,9 @@
 			dstPath = "include/$(PRODUCT_NAME)";
 			dstSubfolderSpec = 16;
 			files = (
+				3F129C271A2A170D00DBCE27 /* JFTransportableOperation.h in CopyFiles */,
+				3F129C281A2A170D00DBCE27 /* JFTransporter.h in CopyFiles */,
+				3F129C291A2A170D00DBCE27 /* JFTransportable.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -139,19 +142,6 @@
 		};
 /* End PBXGroup section */
 
-/* Begin PBXHeadersBuildPhase section */
-		1A3B5A161A290BE40050545F /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1A3B5A1B1A2910230050545F /* JFTransporter.h in Headers */,
-				1A3B5A171A290BF40050545F /* JFTransportable.h in Headers */,
-				1A3B5A181A290BF90050545F /* JFTransportableOperation.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXHeadersBuildPhase section */
-
 /* Begin PBXNativeTarget section */
 		1A3B59F41A29097F0050545F /* JFTransporter */ = {
 			isa = PBXNativeTarget;
@@ -160,7 +150,6 @@
 				1A3B59F11A29097F0050545F /* Sources */,
 				1A3B59F21A29097F0050545F /* Frameworks */,
 				1A3B59F31A29097F0050545F /* CopyFiles */,
-				1A3B5A161A290BE40050545F /* Headers */,
 			);
 			buildRules = (
 			);

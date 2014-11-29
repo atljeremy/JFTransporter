@@ -6,12 +6,16 @@
 //  Copyright (c) 2014 Jeremy Fox. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-
+@import Foundation;
+@class JFTransportableOperation;
 @protocol JFTransportable;
+
+typedef void(^JFTransportableCompletionHandler)(id<NSObject> responseModel, NSError* error);
 
 @interface JFTransporter : NSObject
 
-+ (void)transport:(id<JFTransportable>)transportable ;
++ (instancetype)defaultTransporter;
++ (JFTransportableOperation*)transport:(id<JFTransportable>)transportable withCompletionHandler:(JFTransportableCompletionHandler)completionHandler;
++ (BOOL)cancel:(id<JFTransportable>)transportable;
 
 @end

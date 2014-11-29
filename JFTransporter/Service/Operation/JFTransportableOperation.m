@@ -26,10 +26,10 @@ static NSString* const kJFTranportableOpertaionErrorDomain = @"JFTranportableOpe
 #pragma mark Instantiation
 #pragma mark ----------------------
 
-- (instancetype)initWithRequest:(id<JFTransportable>)request
+- (instancetype)initWithTransportable:(id<JFTransportable>)transportable
 {
     if (self = [super init]) {
-        _request        = request;
+        _transportable  = transportable;
         _executing      = NO;
         _finished       = NO;
         _response       = nil;
@@ -39,9 +39,9 @@ static NSString* const kJFTranportableOpertaionErrorDomain = @"JFTranportableOpe
     return self;
 }
 
-+ (instancetype)operationwithRequest:(id<JFTransportable>)request
++ (instancetype)operationwithTransportable:(id<JFTransportable>)transportable
 {
-    return [[self alloc] initWithRequest:request];
+    return [[self alloc] initWithTransportable:transportable];
 }
 
 #pragma mark ----------------------
@@ -166,7 +166,7 @@ static NSString* const kJFTranportableOpertaionErrorDomain = @"JFTranportableOpe
     [self didChangeValueForKey:@"isFinished"];
 }
 
-- (BOOL)isConcurrent {
+- (BOOL)isAsynchronous {
     return YES;
 }
 

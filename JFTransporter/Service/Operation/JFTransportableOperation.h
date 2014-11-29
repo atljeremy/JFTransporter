@@ -18,13 +18,13 @@ typedef void (^JFTransportableOperationErrorBlock)(JFTransportableOperation* ope
 
 @property (readwrite, getter=isExecuting) BOOL executing;
 @property (readwrite, getter=isFinished) BOOL finished;
-@property (nonatomic, strong, readonly) id<JFTransportable> request;
+@property (nonatomic, strong, readonly) id<JFTransportable> transportable;
 @property (nonatomic, strong, readonly) NSHTTPURLResponse *response;
 @property (nonatomic, strong, readonly) NSData *responseData;
 @property (nonatomic, strong, readonly) NSError *error;
 
-- (instancetype)initWithRequest:(id<JFTransportable>)request NS_DESIGNATED_INITIALIZER;
-+ (instancetype)operationwithRequest:(id<JFTransportable>)request;
+- (instancetype)initWithTransportable:(id<JFTransportable>)transportable NS_DESIGNATED_INITIALIZER;
++ (instancetype)operationwithTransportable:(id<JFTransportable>)transportable;
 
 - (void)setCompletionBlockWithSuccess:(JFTransportableOperationSuccessBlock)success failure:(JFTransportableOperationErrorBlock)failure;
 

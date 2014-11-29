@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "1A3B59AF1A28FF9C0050545F"
+               BlueprintIdentifier = "3F129BEE1A2A11C500DBCE27"
                BuildableName = "JFTransporterExample.app"
                BlueprintName = "JFTransporterExample"
                ReferencedContainer = "container:JFTransporterExample.xcodeproj">
@@ -28,7 +28,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "1A3B59C41A28FF9C0050545F"
+               BlueprintIdentifier = "3F129C071A2A11C500DBCE27"
                BuildableName = "JFTransporterExampleTests.xctest"
                BlueprintName = "JFTransporterExampleTests"
                ReferencedContainer = "container:JFTransporterExample.xcodeproj">
@@ -46,7 +46,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "1A3B59C41A28FF9C0050545F"
+               BlueprintIdentifier = "3F129C071A2A11C500DBCE27"
                BuildableName = "JFTransporterExampleTests.xctest"
                BlueprintName = "JFTransporterExampleTests"
                ReferencedContainer = "container:JFTransporterExample.xcodeproj">
@@ -56,7 +56,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "1A3B59AF1A28FF9C0050545F"
+            BlueprintIdentifier = "3F129BEE1A2A11C500DBCE27"
             BuildableName = "JFTransporterExample.app"
             BlueprintName = "JFTransporterExample"
             ReferencedContainer = "container:JFTransporterExample.xcodeproj">
@@ -75,7 +75,7 @@
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "1A3B59AF1A28FF9C0050545F"
+            BlueprintIdentifier = "3F129BEE1A2A11C500DBCE27"
             BuildableName = "JFTransporterExample.app"
             BlueprintName = "JFTransporterExample"
             ReferencedContainer = "container:JFTransporterExample.xcodeproj">
@@ -93,7 +93,7 @@
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "1A3B59AF1A28FF9C0050545F"
+            BlueprintIdentifier = "3F129BEE1A2A11C500DBCE27"
             BuildableName = "JFTransporterExample.app"
             BlueprintName = "JFTransporterExample"
             ReferencedContainer = "container:JFTransporterExample.xcodeproj">
