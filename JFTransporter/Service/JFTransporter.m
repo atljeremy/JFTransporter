@@ -9,12 +9,14 @@
 #import "JFTransporter.h"
 #import "JFTransportableOperation.h"
 #import "JFTransportable.h"
+#import "JFObjectModelMapping.h"
+#import <objc/runtime.h>
 
 #define JFTransporterAssert(_TRANSPORTER) NSAssert([_TRANSPORTER conformsToProtocol:@protocol(JFTransportable)], @"Invliad transportable - must conform to JFTransportable protocol.")
 
 @interface JFTransporter ()
 @property (nonatomic, strong) NSOperationQueue* queue;
-- (JFTransportableOperation*)transport:(id<JFTransportable>)transportable HTTPMethod:(NSString*)HTTPMethod completionHandler:(JFTransportableCompletionHandler)completionHandler;
+- (JFTransportableOperation*)transport:(id<JFTransportable>)transportable completionHandler:(JFTransportableCompletionHandler)completionHandler;
 @end
 
 @implementation JFTransporter
@@ -49,40 +51,94 @@
 // GET
 - (JFTransportableOperation*)GETTransportable:(id<JFTransportable>)transportable withCompletionHandler:(JFTransportableCompletionHandler)completionHandler
 {
-    return [self transport:transportable HTTPMethod:@"GET" completionHandler:completionHandler];
+    transportable.URL = [transportable GETURL];
+    transportable.HTTPMethod = @"GET";
+    if ([transportable respondsToSelector:@selector(GETHTTPBody)]) {
+        transportable.HTTPBody = [transportable GETHTTPBody];
+    }
+    if ([transportable respondsToSelector:@selector(GETHTTPHeaderFields)]) {
+        transportable.HTTPHeaderFields = [transportable GETHTTPHeaderFields];
+    }
+    return [self transport:transportable completionHandler:completionHandler];
 }
 
 // POST
 - (JFTransportableOperation*)POSTTransportable:(id<JFTransportable>)transportable withCompletionHandler:(JFTransportableCompletionHandler)completionHandler
 {
-    return [self transport:transportable HTTPMethod:@"POST" completionHandler:completionHandler];
+    transportable.URL = transportable.POSTURL;
+    transportable.HTTPMethod = @"POST";
+    if ([transportable respondsToSelector:@selector(POSTHTTPBody)]) {
+        transportable.HTTPBody = transportable.POSTHTTPBody;
+    }
+    if ([transportable respondsToSelector:@selector(POSTHTTPHeaderFields)]) {
+        transportable.HTTPHeaderFields = transportable.POSTHTTPHeaderFields;
+    }
+    
+    return [self transport:transportable completionHandler:completionHandler];
 }
 
 // PUT
 - (JFTransportableOperation*)PUTTransportable:(id<JFTransportable>)transportable withCompletionHandler:(JFTransportableCompletionHandler)completionHandler
 {
-    return [self transport:transportable HTTPMethod:@"PUT" completionHandler:completionHandler];
+    transportable.URL = transportable.PUTURL;
+    transportable.HTTPMethod = @"PUT";
+    if ([transportable respondsToSelector:@selector(PUTHTTPBody)]) {
+        transportable.HTTPBody = transportable.PUTHTTPBody;
+    }
+    if ([transportable respondsToSelector:@selector(PUTHTTPHeaderFields)]) {
+        transportable.HTTPHeaderFields = transportable.PUTHTTPHeaderFields;
+    }
+    
+    return [self transport:transportable completionHandler:completionHandler];
 }
 
 // PATCH
 - (JFTransportableOperation*)PATCHTransportable:(id<JFTransportable>)transportable withCompletionHandler:(JFTransportableCompletionHandler)completionHandler
 {
-    return [self transport:transportable HTTPMethod:@"PATCH" completionHandler:completionHandler];
+    transportable.URL = transportable.PATCHURL;
+    transportable.HTTPMethod = @"PATCH";
+    if ([transportable respondsToSelector:@selector(PATCHHTTPBody)]) {
+        transportable.HTTPBody = transportable.PATCHHTTPBody;
+    }
+    if ([transportable respondsToSelector:@selector(PATCHHTTPBody)]) {
+        transportable.HTTPHeaderFields = transportable.PATCHHTTPHeaderFields;
+    }
+    
+    return [self transport:transportable completionHandler:completionHandler];
 }
 
 // DELETE
 - (JFTransportableOperation*)DELETETransportable:(id<JFTransportable>)transportable withCompletionHandler:(JFTransportableCompletionHandler)completionHandler
 {
-    return [self transport:transportable HTTPMethod:@"DELETE" completionHandler:completionHandler];
+    transportable.URL = transportable.DELETEURL;
+    transportable.HTTPMethod = @"DELETE";
+    if ([transportable respondsToSelector:@selector(DELETEHTTPBody)]) {
+        transportable.HTTPBody = transportable.DELETEHTTPBody;
+    }
+    if ([transportable respondsToSelector:@selector(DELETEHTTPHeaderFields)]) {
+        transportable.HTTPHeaderFields = transportable.DELETEHTTPHeaderFields;
+    }
+    
+    return [self transport:transportable completionHandler:completionHandler];
 }
 
-- (JFTransportableOperation*)transport:(id<JFTransportable>)transportable HTTPMethod:(NSString*)HTTPMethod completionHandler:(JFTransportableCompletionHandler)completionHandler
+- (JFTransportableOperation*)transport:(id<JFTransportable>)transportable completionHandler:(JFTransportableCompletionHandler)completionHandler
 {
     JFTransporterAssert(transportable);
     NSParameterAssert(completionHandler);
-    NSParameterAssert(HTTPMethod);
     
     JFTransportableOperation* operation = [JFTransportableOperation operationwithTransportable:transportable];
+    [operation setCompletionBlockWithSuccess:^(JFTransportableOperation *operation, id responseObject) {
+        id<JFTransportable> _transportable = operation.transportable;
+        NSError* error;
+        NSDictionary* response = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:&error];
+        if (response.count > 0) {
+            [JFObjectModelMapping mapResponseObject:response toTransportable:&_transportable];
+        }
+        completionHandler(_transportable, error);
+    } failure:^(JFTransportableOperation *operation, NSError* error) {
+        completionHandler(operation.transportable, error);
+    }];
     
     [self.queue addOperation:operation];
     

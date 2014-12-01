@@ -12,7 +12,7 @@
 static NSString* const kJFTranportableOpertaionErrorDomain = @"JFTranportableOpertaionErrorDomain";
 
 @interface JFTransportableOperation()
-@property (nonatomic, strong, readwrite) id<JFTransportable> request;
+@property (nonatomic, strong, readwrite) id<JFTransportable> transportable;
 @property (nonatomic, strong, readwrite) NSHTTPURLResponse *response;
 @property (nonatomic, strong, readwrite) NSData *responseData;
 @property (nonatomic, strong, readwrite) NSError *error;
@@ -81,18 +81,18 @@ static NSString* const kJFTranportableOpertaionErrorDomain = @"JFTranportableOpe
             return;
         }
         
-        if (![self.request conformsToProtocol:@protocol(JFTransportable)]) {
+        if (![self.transportable conformsToProtocol:@protocol(JFTransportable)]) {
             [self completeOperation];
             return;
         }
         
-        NSURL* url = self.request.URL;
+        NSURL* url = self.transportable.URL;
         NSMutableURLRequest* urlRequest = [NSMutableURLRequest requestWithURL:url];
-        urlRequest.HTTPMethod = self.request.HTTPMethod;
+        urlRequest.HTTPMethod = self.transportable.HTTPMethod;
         
-        if ([self.request respondsToSelector:@selector(HTTPBody)]) {
-            urlRequest.HTTPBody = self.request.HTTPBody;
-            NSString* params = [NSString stringWithCString:self.request.HTTPBody.bytes encoding:NSUTF8StringEncoding];
+        if ([self.transportable respondsToSelector:@selector(HTTPBody)] && self.transportable.HTTPBody) {
+            urlRequest.HTTPBody = self.transportable.HTTPBody;
+            NSString* params = [NSString stringWithCString:self.transportable.HTTPBody.bytes encoding:NSUTF8StringEncoding];
             NSLog(@"HTTPBody: %@", params);
         }
         
@@ -101,8 +101,8 @@ static NSString* const kJFTranportableOpertaionErrorDomain = @"JFTranportableOpe
             return;
         }
         
-        if ([self.request respondsToSelector:@selector(allHTTPHeaderFields)]) {
-            [self.request.allHTTPHeaderFields enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        if ([self.transportable respondsToSelector:@selector(HTTPHeaderFields)]) {
+            [self.transportable.HTTPHeaderFields enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
                 if ([obj isKindOfClass:[NSString class]] && [key isKindOfClass:[NSString class]]) {
                     [urlRequest setValue:obj forHTTPHeaderField:key];
                 }

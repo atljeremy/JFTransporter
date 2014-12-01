@@ -10,6 +10,8 @@
 		1A3B5A011A29097F0050545F /* libJFTransporter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A3B59F51A29097F0050545F /* libJFTransporter.a */; };
 		1A3B5A151A290B7F0050545F /* JFTransportableOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A3B5A141A290B7F0050545F /* JFTransportableOperation.m */; };
 		1A3B5A1C1A2910230050545F /* JFTransporter.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A3B5A1A1A2910230050545F /* JFTransporter.m */; };
+		1A3B5A231A2CB9FF0050545F /* JFObjectModelMapping.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A3B5A221A2CB9FF0050545F /* JFObjectModelMapping.m */; };
+		1A3B5A341A2CE18C0050545F /* JFObjectModelMapping.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1A3B5A211A2CB9FF0050545F /* JFObjectModelMapping.h */; };
 		3F129C271A2A170D00DBCE27 /* JFTransportableOperation.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1A3B5A131A290B7F0050545F /* JFTransportableOperation.h */; };
 		3F129C281A2A170D00DBCE27 /* JFTransporter.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1A3B5A191A2910230050545F /* JFTransporter.h */; };
 		3F129C291A2A170D00DBCE27 /* JFTransportable.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1A3B5A101A290A1B0050545F /* JFTransportable.h */; };
@@ -32,6 +34,7 @@
 			dstPath = "include/$(PRODUCT_NAME)";
 			dstSubfolderSpec = 16;
 			files = (
+				1A3B5A341A2CE18C0050545F /* JFObjectModelMapping.h in CopyFiles */,
 				3F129C271A2A170D00DBCE27 /* JFTransportableOperation.h in CopyFiles */,
 				3F129C281A2A170D00DBCE27 /* JFTransporter.h in CopyFiles */,
 				3F129C291A2A170D00DBCE27 /* JFTransportable.h in CopyFiles */,
@@ -49,6 +52,8 @@
 		1A3B5A141A290B7F0050545F /* JFTransportableOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JFTransportableOperation.m; sourceTree = "<group>"; };
 		1A3B5A191A2910230050545F /* JFTransporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JFTransporter.h; sourceTree = "<group>"; };
 		1A3B5A1A1A2910230050545F /* JFTransporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JFTransporter.m; sourceTree = "<group>"; };
+		1A3B5A211A2CB9FF0050545F /* JFObjectModelMapping.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JFObjectModelMapping.h; sourceTree = "<group>"; };
+		1A3B5A221A2CB9FF0050545F /* JFObjectModelMapping.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JFObjectModelMapping.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,6 +129,7 @@
 		1A3B5A111A290B430050545F /* Service */ = {
 			isa = PBXGroup;
 			children = (
+				1A3B5A201A2CB9C20050545F /* Mapping */,
 				1A3B5A121A290B430050545F /* Operation */,
 				1A3B5A191A2910230050545F /* JFTransporter.h */,
 				1A3B5A1A1A2910230050545F /* JFTransporter.m */,
@@ -138,6 +144,15 @@
 				1A3B5A141A290B7F0050545F /* JFTransportableOperation.m */,
 			);
 			path = Operation;
+			sourceTree = "<group>";
+		};
+		1A3B5A201A2CB9C20050545F /* Mapping */ = {
+			isa = PBXGroup;
+			children = (
+				1A3B5A211A2CB9FF0050545F /* JFObjectModelMapping.h */,
+				1A3B5A221A2CB9FF0050545F /* JFObjectModelMapping.m */,
+			);
+			path = Mapping;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -229,6 +244,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1A3B5A1C1A2910230050545F /* JFTransporter.m in Sources */,
+				1A3B5A231A2CB9FF0050545F /* JFObjectModelMapping.m in Sources */,
 				1A3B5A151A290B7F0050545F /* JFTransportableOperation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

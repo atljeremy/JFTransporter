@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1A3B5A331A2CD1310050545F /* Current.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A3B5A321A2CD1310050545F /* Current.m */; };
+		1A3B5A371A2CEA0C0050545F /* Daily.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A3B5A361A2CEA0C0050545F /* Daily.m */; };
+		1A3B5A3D1A2CF9240050545F /* Day.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A3B5A3C1A2CF9240050545F /* Day.m */; };
+		1A3B5A401A2D0CB30050545F /* ForecastCurrentTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A3B5A3F1A2D0CB30050545F /* ForecastCurrentTableViewCell.m */; };
+		1A3B5A441A2D0CE30050545F /* ForecastDailyTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A3B5A431A2D0CE30050545F /* ForecastDailyTableViewCell.m */; };
 		3F129BF51A2A11C500DBCE27 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F129BF41A2A11C500DBCE27 /* main.m */; };
 		3F129BF81A2A11C500DBCE27 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F129BF71A2A11C500DBCE27 /* AppDelegate.m */; };
 		3F129BFB1A2A11C500DBCE27 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F129BFA1A2A11C500DBCE27 /* ViewController.m */; };
@@ -14,7 +19,7 @@
 		3F129C001A2A11C500DBCE27 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3F129BFF1A2A11C500DBCE27 /* Images.xcassets */; };
 		3F129C031A2A11C500DBCE27 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3F129C011A2A11C500DBCE27 /* LaunchScreen.xib */; };
 		3F129C0F1A2A11C500DBCE27 /* JFTransporterExampleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F129C0E1A2A11C500DBCE27 /* JFTransporterExampleTests.m */; };
-		3F129C231A2A124000DBCE27 /* Tweet.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F129C221A2A124000DBCE27 /* Tweet.m */; };
+		3F129C231A2A124000DBCE27 /* Forecast.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F129C221A2A124000DBCE27 /* Forecast.m */; };
 		3F129C261A2A126100DBCE27 /* libJFTransporter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F129C1E1A2A120400DBCE27 /* libJFTransporter.a */; };
 /* End PBXBuildFile section */
 
@@ -50,6 +55,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1A3B5A311A2CD1310050545F /* Current.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Current.h; sourceTree = "<group>"; };
+		1A3B5A321A2CD1310050545F /* Current.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Current.m; sourceTree = "<group>"; };
+		1A3B5A351A2CEA0C0050545F /* Daily.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Daily.h; sourceTree = "<group>"; };
+		1A3B5A361A2CEA0C0050545F /* Daily.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Daily.m; sourceTree = "<group>"; };
+		1A3B5A3B1A2CF9240050545F /* Day.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Day.h; sourceTree = "<group>"; };
+		1A3B5A3C1A2CF9240050545F /* Day.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Day.m; sourceTree = "<group>"; };
+		1A3B5A3E1A2D0CB30050545F /* ForecastCurrentTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ForecastCurrentTableViewCell.h; sourceTree = "<group>"; };
+		1A3B5A3F1A2D0CB30050545F /* ForecastCurrentTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ForecastCurrentTableViewCell.m; sourceTree = "<group>"; };
+		1A3B5A421A2D0CE30050545F /* ForecastDailyTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ForecastDailyTableViewCell.h; sourceTree = "<group>"; };
+		1A3B5A431A2D0CE30050545F /* ForecastDailyTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ForecastDailyTableViewCell.m; sourceTree = "<group>"; };
 		3F129BEF1A2A11C500DBCE27 /* JFTransporterExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JFTransporterExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3F129BF31A2A11C500DBCE27 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3F129BF41A2A11C500DBCE27 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -64,8 +79,8 @@
 		3F129C0D1A2A11C500DBCE27 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3F129C0E1A2A11C500DBCE27 /* JFTransporterExampleTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JFTransporterExampleTests.m; sourceTree = "<group>"; };
 		3F129C181A2A120400DBCE27 /* JFTransporter.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = JFTransporter.xcodeproj; path = ../../JFTransporter.xcodeproj; sourceTree = "<group>"; };
-		3F129C211A2A124000DBCE27 /* Tweet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tweet.h; sourceTree = "<group>"; };
-		3F129C221A2A124000DBCE27 /* Tweet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Tweet.m; sourceTree = "<group>"; };
+		3F129C211A2A124000DBCE27 /* Forecast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Forecast.h; sourceTree = "<group>"; };
+		3F129C221A2A124000DBCE27 /* Forecast.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Forecast.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,6 +102,32 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1A3B5A1F1A2CB5F80050545F /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				3F129C211A2A124000DBCE27 /* Forecast.h */,
+				3F129C221A2A124000DBCE27 /* Forecast.m */,
+				1A3B5A311A2CD1310050545F /* Current.h */,
+				1A3B5A321A2CD1310050545F /* Current.m */,
+				1A3B5A351A2CEA0C0050545F /* Daily.h */,
+				1A3B5A361A2CEA0C0050545F /* Daily.m */,
+				1A3B5A3B1A2CF9240050545F /* Day.h */,
+				1A3B5A3C1A2CF9240050545F /* Day.m */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		1A3B5A411A2D0CB70050545F /* Table Cells */ = {
+			isa = PBXGroup;
+			children = (
+				1A3B5A3E1A2D0CB30050545F /* ForecastCurrentTableViewCell.h */,
+				1A3B5A3F1A2D0CB30050545F /* ForecastCurrentTableViewCell.m */,
+				1A3B5A421A2D0CE30050545F /* ForecastDailyTableViewCell.h */,
+				1A3B5A431A2D0CE30050545F /* ForecastDailyTableViewCell.m */,
+			);
+			name = "Table Cells";
+			sourceTree = "<group>";
+		};
 		3F129BE61A2A11C500DBCE27 = {
 			isa = PBXGroup;
 			children = (
@@ -117,8 +158,8 @@
 				3F129BFF1A2A11C500DBCE27 /* Images.xcassets */,
 				3F129C011A2A11C500DBCE27 /* LaunchScreen.xib */,
 				3F129BF21A2A11C500DBCE27 /* Supporting Files */,
-				3F129C211A2A124000DBCE27 /* Tweet.h */,
-				3F129C221A2A124000DBCE27 /* Tweet.m */,
+				1A3B5A1F1A2CB5F80050545F /* Models */,
+				1A3B5A411A2D0CB70050545F /* Table Cells */,
 			);
 			path = JFTransporterExample;
 			sourceTree = "<group>";
@@ -282,10 +323,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1A3B5A441A2D0CE30050545F /* ForecastDailyTableViewCell.m in Sources */,
+				1A3B5A3D1A2CF9240050545F /* Day.m in Sources */,
 				3F129BFB1A2A11C500DBCE27 /* ViewController.m in Sources */,
 				3F129BF81A2A11C500DBCE27 /* AppDelegate.m in Sources */,
 				3F129BF51A2A11C500DBCE27 /* main.m in Sources */,
-				3F129C231A2A124000DBCE27 /* Tweet.m in Sources */,
+				1A3B5A371A2CEA0C0050545F /* Daily.m in Sources */,
+				1A3B5A331A2CD1310050545F /* Current.m in Sources */,
+				1A3B5A401A2D0CB30050545F /* ForecastCurrentTableViewCell.m in Sources */,
+				3F129C231A2A124000DBCE27 /* Forecast.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -422,6 +468,7 @@
 				LIBRARY_SEARCH_PATHS = "";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -439,6 +486,7 @@
 				LIBRARY_SEARCH_PATHS = "";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};

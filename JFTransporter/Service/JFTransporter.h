@@ -10,7 +10,7 @@
 @class JFTransportableOperation;
 @protocol JFTransportable;
 
-typedef void(^JFTransportableCompletionHandler)(id<NSObject> responseModel, NSError* error);
+typedef void(^JFTransportableCompletionHandler)(id<JFTransportable> transportable, NSError* error);
 
 @interface JFTransporter : NSObject
 

@@ -11,8 +11,11 @@
 @protocol JFTransportable;
 @class JFTransportableOperation;
 
+static NSString* const kJFTransportableURLKey;
+static NSString* const kJFTransportableHTTPMethodKey;
+
 typedef void (^JFTransportableOperationSuccessBlock)(JFTransportableOperation* operation, id responseObject);
-typedef void (^JFTransportableOperationErrorBlock)(JFTransportableOperation* operation, id responseObject);
+typedef void (^JFTransportableOperationErrorBlock)(JFTransportableOperation* operation, NSError* error);
 
 @interface JFTransportableOperation : NSOperation
 
