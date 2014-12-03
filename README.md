@@ -9,7 +9,7 @@ How To Use It:
 -------------
 
 ###Note
-there is a complete example project in the /Example/JFTransporterExample directory of this repository. I highly encourage you to clone and open this example project which shows JFTransporter in action.
+There is a complete example project in the /Example/JFTransporterExample directory of this repository. I highly encourage you to clone and open this example project which shows JFTransporter in action.
 
 ###Basic Example
 
