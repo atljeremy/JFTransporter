@@ -42,7 +42,7 @@ Create your model classes and make sure they conform to the JFTransportable Prot
 
 ####Step Two
 
-In your model's implementation, implement any of the @optional JFTransportable methods that are appropriate for your model. For example, if your model will only be cretaed from a GET request to an API, You'll only need to implement the `- (NSURL*)GETURL` method. However, if your model will also need to be POSTed, DELETEed, etc., you'll also need to implement the corresponding JFTransportable methods.
+In your model's implementation, implement any of the @optional `JFTransportable` methods that are appropriate for your model. For example, if your model will only be cretaed from a GET request to an API, You'll only need to implement the `- (NSURL*)GETURL` method. However, if your model will also need to be POSTed, DELETEed, etc., you'll also need to implement the corresponding `JFTransportable` methods.
 
 In each method implementation you will need to return the full and complete URL that will be used for the corresponding HTTP request. See the example below.
 
@@ -68,7 +68,7 @@ static NSString* const kForecastAPIURLString = @"https://api.forecast.io/forecas
 
 ####Step Three
 
-Implement the `- (NSDictionary*)responseToObjectModelMapping` method from the JFTransportable Protocol. This is used to tell JFTransporter how to map the API's response object KVP's to your model.
+Implement the `- (NSDictionary*)responseToObjectModelMapping` method from the `JFTransportable` Protocol. This is used to tell JFTransporter how to map the API's response object KVP's to your model.
 
 There are two helper macros that you should use to tell JFTransporter how to map response sub dictionarys/arrays to specific model classes/collections. THese macros are `JFObjectModelMappingObjectDictionary(_CLASS_, _PROPERTY_)` and `JFObjectModelMappingObjectArray(_CLASS_, _PROPERTY_)`. Both take a Class as the first argument and an NSString representing the model's property to map the Class instance to. See the examples below.
 
@@ -123,7 +123,7 @@ Here is an exmaple of the `Daily` model which is using the `JFObjectModelMapping
 
 ####Step Four (Final Step)
 
-Create an instance of your model and pass it into the appropriate JFTransporter request method. JSTransporter will then create and execute an HTTP request based on what your model tells it via the JFTransportable Protocol implementations. It will then map the response using your object mapping NSDictionaries implemented in each of your models. The result is that your newely created model will have all of it's properties automagically set appropriately and returned to you in the completion block. See example below.
+Create an instance of your model and pass it into the appropriate JFTransporter request method. JSTransporter will then create and execute an HTTP request based on what your model tells it via the `JFTransportable` Protocol implementations. It will then map the response using your object mapping NSDictionaries implemented in each of your models. The result is that your newely created model will have all of it's properties automagically set appropriately and returned to you in the completion block. See example below.
 
 ```objective-c
 @interface ViewController ()
