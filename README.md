@@ -70,7 +70,7 @@ static NSString* const kForecastAPIURLString = @"https://api.forecast.io/forecas
 
 Implement the `- (NSDictionary*)responseToObjectModelMapping` method from the `JFTransportable` Protocol. This is used to tell `JFTransporter` how to map the API's response object KVP's to your model.
 
-There are two helper macros that you should use to tell `JFTransporter` how to map response sub dictionarys/arrays to specific model classes/collections. THese macros are `JFObjectModelMappingObjectDictionary(_CLASS_, _PROPERTY_)` and `JFObjectModelMappingObjectArray(_CLASS_, _PROPERTY_)`. Both take a Class as the first argument and an NSString representing the model's property to map the Class instance to. See the examples below.
+There are two helper macros that you should use to tell `JFTransporter` how to map response sub dictionarys/arrays to specific model classes/collections. These macros are `JFObjectModelMappingObjectDictionary(_CLASS_, _PROPERTY_)` and `JFObjectModelMappingObjectArray(_CLASS_, _PROPERTY_)`. Both take a Class as the first argument and an NSString representing the model's property to map the Class instance to. See the examples below.
 
 ```objective-c
 #import "Forecast.h"
