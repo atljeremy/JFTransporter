@@ -42,7 +42,7 @@ Create your model classes and make sure they conform to the `JFTransportable` Pr
 
 ####Step Two
 
-In your model's implementation, implement any of the @optional `JFTransportable` methods that are appropriate for your model. For example, if your model will only be cretaed from a GET request to an API, You'll only need to implement the `- (NSURL*)GETURL` method. However, if your model will also need to be POSTed, DELETEed, etc., you'll also need to implement the corresponding `JFTransportable` methods.
+In your model's implementation, implement any of the @optional `JFTransportable` methods that are appropriate for your model. For example, if your model will only be cretaed from a GET request to an API you'll only need to implement the `- (NSURL*)GETURL` method. However, if your model will also need to be POSTed, DELETEed, etc., you'll also need to implement the corresponding `JFTransportable` methods.
 
 In each method implementation you will need to return the full and complete URL that will be used for the corresponding HTTP request. See the example below.
 
