@@ -81,6 +81,7 @@ static NSInteger const kJFObjectModelMappingArrayPropertyIndex = 1;
     NSMutableArray* keys;
     NSRange range = [key rangeOfString:@"["];
     if (range.location != NSNotFound) {
+        keys = [@[] mutableCopy];
         NSMutableArray* locations = [@[] mutableCopy];
         [key enumerateSubstringsInRange:NSMakeRange(0, key.length) options:NSStringEnumerationByComposedCharacterSequences usingBlock:^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
             if ([substring isEqualToString:@"["] || [substring isEqualToString:@"]"]) {
@@ -95,7 +96,7 @@ static NSInteger const kJFObjectModelMappingArrayPropertyIndex = 1;
             if (previousRange.location == NSNotFound) {
                 substringRange = NSMakeRange(0, _range.location);
             } else {
-                substringRange = NSMakeRange(previousRange.location, _range.location - previousRange.location);
+                substringRange = NSMakeRange(previousRange.location + 1, _range.location - previousRange.location - 1);
             }
             
             NSString* _key = [key substringWithRange:substringRange];
