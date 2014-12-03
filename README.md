@@ -1,7 +1,7 @@
 JFTransporter
 =============
 
-An Objective-C Networking abstraction to help make setting up a service layer in and iOS app much easier and quicker
+An Objective-C Networking abstraction to help make setting up a service layer in an iOS app much quicker and easier 
 
 ###Build/Tests Status: ![build status](https://travis-ci.org/atljeremy/JFTransporter.svg?branch=master)
 
