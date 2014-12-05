@@ -16,7 +16,7 @@ pod "JFTransporter", "~> 0.0.1"
 
 ###Static Library
 
-Instructions on using static libraries in you iOS applications: https://developer.apple.com/library/ios/technotes/iOSStaticLibraries/iOSStaticLibraries.pdf
+Instructions on using static libraries in your iOS applications: https://developer.apple.com/library/ios/technotes/iOSStaticLibraries/iOSStaticLibraries.pdf
 
 How To Use It:
 -------------
