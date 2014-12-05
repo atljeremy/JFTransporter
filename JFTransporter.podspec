@@ -17,11 +17,11 @@ Pod::Spec.new do |s|
 
   s.name         = "JFTransporter"
   s.version      = "0.0.1"
-  s.summary      = "An Objective-C Networking abstraction to help make setting up a service layer in an iOS app much quicker and easier."
+  s.summary      = "An Objective-C Networking abstraction to help make setting up a service layer in an iOS app much quicker and easier"
   s.requires_arc = true
 
   s.description  = <<-DESC
-                   An Objective-C Networking abstraction to help make setting up a service layer in an iOS app much quicker and easier
+                   An Objective-C Networking abstraction to help make setting up a service layer in an iOS app much quicker and easier.
                    DESC
 
   s.homepage     = "https://github.com/atljeremy/JFTransporter"
@@ -84,9 +84,9 @@ Pod::Spec.new do |s|
   #  Not including the public_header_files will make all headers public.
   #
 
-  s.source_files  = "JFTransporter/*.{h,m}"
+  s.source_files  = "JFTransporter/**/*.{h,m}"
   # s.exclude_files = "Classes/Exclude"
-  s.public_header_files = "JFTransporter/*.h"
+  # s.public_header_files = "JFTransporter/*.h"
 
 
   # ――― Resources ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
