@@ -5,6 +5,19 @@ An Objective-C Networking abstraction to help make setting up a service layer in
 
 ###Build/Tests Status: ![build status](https://travis-ci.org/atljeremy/JFTransporter.svg?branch=master)
 
+Installation:
+-------------
+
+###CocoaPods
+
+```ruby
+pod "JFTransporter", "~> 0.0.1"
+```
+
+###Static Library
+
+Instructions on using static libraries in you iOS applications: https://developer.apple.com/library/ios/technotes/iOSStaticLibraries/iOSStaticLibraries.pdf
+
 How To Use It:
 -------------
 
