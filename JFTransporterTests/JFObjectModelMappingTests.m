@@ -96,6 +96,27 @@
 
 /***********************************************************/
 
+@interface TestNestedTransportableTwo : NSObject <JFTransportable>
+
+@property (nonatomic, strong) NSArray* array;
+
+@property (nonatomic, strong) NSURL* URL;
+@property (nonatomic, strong) NSString* HTTPMethod;
+@property (nonatomic, strong) NSData* HTTPBody;
+@property (nonatomic, strong) NSDictionary* HTTPHeaderFields;
+@end
+
+@implementation TestNestedTransportableTwo
+
+- (NSDictionary*)responseToObjectModelMapping
+{
+    return @{@"thisisalongkey[thisisanotherlongkey][yetanotherlongeykey]": JFObjectModelMappingObjectArray([Day class], @"array")};
+}
+
+@end
+
+/***********************************************************/
+
 @interface TestTransportable : NSObject <JFTransportable>
 
 @property (nonatomic, strong) Current* current;
@@ -122,6 +143,7 @@
 @interface JFObjectModelMappingTests : XCTestCase
 @property (nonatomic, strong) NSDictionary* response;
 @property (nonatomic, strong) TestNestedTransportable* nestedTransportable;
+@property (nonatomic, strong) TestNestedTransportableTwo* nestedTransportableTwo;
 @property (nonatomic, strong) TestTransportable* transportable;
 @end
 
@@ -129,15 +151,28 @@
 
 - (void)setUp {
     [super setUp];
-    self.response = @{@"currently": @{@"temperature": @(55.96)},
-                      @"daily": @{@"data": @[@{@"temperatureMax": @(86.45), @"temperatureMin": @(45.67)}, @{@"temperatureMax": @(98.32), @"temperatureMin": @(22.11)}]}};
+    self.response = @{@"currently": @{@"temperature": @55.96},
+                      @"daily": @{@"data": @[@{@"temperatureMax": @86.45,
+                                               @"temperatureMin": @45.67},
+                                             @{@"temperatureMax": @98.32,
+                                               @"temperatureMin": @22.11}]},
+                      @"thisisalongkey": @{@"thisisanotherlongkey": @{@"yetanotherlongeykey": @[@{@"temperatureMax": @12345.00,
+                                                                                                  @"temperatureMin": @54321.00}]}}};
     TestNestedTransportable* nestedTransportable = [TestNestedTransportable new];
     [JFObjectModelMapping mapResponseObject:self.response toTransportable:&nestedTransportable];
     self.nestedTransportable = nestedTransportable;
     
+    TestNestedTransportableTwo* nestedTransportableTwo = [TestNestedTransportableTwo new];
+    [JFObjectModelMapping mapResponseObject:self.response toTransportable:&nestedTransportableTwo];
+    self.nestedTransportableTwo = nestedTransportableTwo;
+    
     TestTransportable* transportable = [TestTransportable new];
     [JFObjectModelMapping mapResponseObject:self.response toTransportable:&transportable];
     self.transportable = transportable;
+}
+
+- (void)testMappingMapsToProperDaysArrayObject {
+    XCTAssertTrue(self.transportable.daily.days.count == 2, @"Nested response mapping should map to a valid object");
 }
 
 - (void)testMappingMapsToProperCurrentObject {
@@ -148,13 +183,11 @@
     XCTAssertEqual(self.transportable.daily.class, [Daily class], @"Nested response mapping should map to a valid Daily object");
 }
 
-- (void)testNestedMappingMapsToProperDaysArrayObject {
-    XCTAssertTrue(self.transportable.daily.days.count == 2, @"Nested response mapping should map to a valid object");
-}
-
 - (void)testMappingMapsToProperDailyDayObject {
     XCTAssertEqual(((Day*)self.transportable.daily.days.firstObject).class, [Day class], @"Nested response mapping should map to a valid Daily->Day object");
 }
+
+// nested mapping tests
 
 - (void)testNestedMappingMapsToProperObject {
     XCTAssertTrue(self.nestedTransportable.array.count == 2, @"Nested response mapping should map to a valid object");
@@ -172,6 +205,35 @@
 - (void)testNestedMappingMapsToProperObjectValueMin {
     Day* day = [self.nestedTransportable.array lastObject];
     XCTAssertEqual(day.temperatureMin.doubleValue, 22.11, @"Nested response mapping should map to valid min value");
+}
+
+// deeply nested mapping tests
+
+- (void)testDeeplyNestedMappingMapsToProperObject {
+    XCTAssertTrue(self.nestedTransportableTwo.array.count == 1, @"Nested response mapping should map to a valid object");
+}
+
+- (void)testDeeplyNestedMappingMapsToDayObject {
+    XCTAssertEqual(((Day*)self.nestedTransportableTwo.array.firstObject).class, [Day class], @"Nested response mapping should map to Day object");
+}
+
+- (void)testDeeplyNestedMappingMapsToProperObjectValueMax {
+    Day* day = [self.nestedTransportableTwo.array firstObject];
+    XCTAssertEqual(day.temperatureMax.doubleValue, 12345.00, @"Nested response mapping should map to valid max value");
+}
+
+- (void)testDeeplyNestedMappingMapsToProperObjectValueMin {
+    Day* day = [self.nestedTransportableTwo.array firstObject];
+    XCTAssertEqual(day.temperatureMin.doubleValue, 54321.00, @"Nested response mapping should map to valid min value");
+}
+
+// mapping performance tests
+
+- (void)testNestedObjectMappingPerformanceTwo {
+    __block TestNestedTransportableTwo* transportable = [TestNestedTransportableTwo new];
+    [self measureBlock:^{
+        [JFObjectModelMapping mapResponseObject:self.response toTransportable:&transportable];
+    }];
 }
 
 - (void)testNestedObjectMappingPerformance {
