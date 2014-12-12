@@ -13,9 +13,8 @@
 extern NSString* const kJFObjectModelMappingPropertyKey;
 extern NSString* const kJFObjectModelMappingObjectKey;
 
-#define JFObjectModelMappingObjectDictionary(_CLASS_, _PROPERTY_) @{kJFObjectModelMappingObjectKey: _CLASS_, kJFObjectModelMappingPropertyKey: _PROPERTY_}
-
-#define JFObjectModelMappingObjectArray(_CLASS_, _PROPERTY_) @[_CLASS_, _PROPERTY_]
+extern NSDictionary* JFObjectModelMappingObjectDictionary(Class __CLASS__, NSString* __PROPERTY__);
+extern NSArray* JFObjectModelMappingObjectArray(Class __CLASS__, NSString* __PROPERTY__);
 
 @interface JFObjectModelMapping : NSObject
 

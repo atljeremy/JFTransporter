@@ -15,6 +15,14 @@ NSString* const kJFObjectModelMappingObjectKey   = @"object";
 static NSInteger const kJFObjectModelMappingArrayObjectIndex   = 0;
 static NSInteger const kJFObjectModelMappingArrayPropertyIndex = 1;
 
+NSDictionary* JFObjectModelMappingObjectDictionary(Class __CLASS__, NSString* __PROPERTY__) {
+    return @{kJFObjectModelMappingObjectKey: __CLASS__, kJFObjectModelMappingPropertyKey: __PROPERTY__};
+}
+
+NSArray* JFObjectModelMappingObjectArray(Class __CLASS__, NSString* __PROPERTY__) {
+    return @[__CLASS__, __PROPERTY__];
+}
+
 @implementation JFObjectModelMapping
 
 + (void)mapResponseObject:(id<NSObject>)response toTransportable:(id<JFTransportable>*)transportable
