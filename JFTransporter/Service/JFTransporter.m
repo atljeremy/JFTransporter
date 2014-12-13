@@ -49,7 +49,7 @@
 #pragma mark ----------------------
 
 // GET
-- (JFTransportableOperation*)GETTransportable:(id<JFTransportable>)transportable withCompletionHandler:(JFTransportableCompletionHandler)completionHandler
+- (JFTransportableOperation*)GETTransportable:(id<JFTransportable>)transportable completionHandler:(JFTransportableCompletionHandler)completionHandler
 {
     transportable.URL = [transportable GETURL];
     transportable.HTTPMethod = @"GET";
@@ -63,7 +63,7 @@
 }
 
 // POST
-- (JFTransportableOperation*)POSTTransportable:(id<JFTransportable>)transportable withCompletionHandler:(JFTransportableCompletionHandler)completionHandler
+- (JFTransportableOperation*)POSTTransportable:(id<JFTransportable>)transportable completionHandler:(JFTransportableCompletionHandler)completionHandler
 {
     transportable.URL = transportable.POSTURL;
     transportable.HTTPMethod = @"POST";
@@ -78,7 +78,7 @@
 }
 
 // PUT
-- (JFTransportableOperation*)PUTTransportable:(id<JFTransportable>)transportable withCompletionHandler:(JFTransportableCompletionHandler)completionHandler
+- (JFTransportableOperation*)PUTTransportable:(id<JFTransportable>)transportable completionHandler:(JFTransportableCompletionHandler)completionHandler
 {
     transportable.URL = transportable.PUTURL;
     transportable.HTTPMethod = @"PUT";
@@ -93,7 +93,7 @@
 }
 
 // PATCH
-- (JFTransportableOperation*)PATCHTransportable:(id<JFTransportable>)transportable withCompletionHandler:(JFTransportableCompletionHandler)completionHandler
+- (JFTransportableOperation*)PATCHTransportable:(id<JFTransportable>)transportable completionHandler:(JFTransportableCompletionHandler)completionHandler
 {
     transportable.URL = transportable.PATCHURL;
     transportable.HTTPMethod = @"PATCH";
@@ -108,7 +108,7 @@
 }
 
 // DELETE
-- (JFTransportableOperation*)DELETETransportable:(id<JFTransportable>)transportable withCompletionHandler:(JFTransportableCompletionHandler)completionHandler
+- (JFTransportableOperation*)DELETETransportable:(id<JFTransportable>)transportable completionHandler:(JFTransportableCompletionHandler)completionHandler
 {
     transportable.URL = transportable.DELETEURL;
     transportable.HTTPMethod = @"DELETE";

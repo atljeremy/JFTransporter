@@ -45,6 +45,10 @@ NSArray* JFObjectModelMappingObjectArray(Class __CLASS__, NSString* __PROPERTY__
             responseValue = response[key];
         }
         
+        if ([responseValue isKindOfClass:[NSNull class]]) {
+            responseValue = nil;
+        }
+        
         if ([value isKindOfClass:[NSDictionary class]]) {
             NSString* property = value[kJFObjectModelMappingPropertyKey];
             id klass = value[kJFObjectModelMappingObjectKey];

@@ -7,7 +7,7 @@
 //
 
 @import Foundation;
-@class JFTransportableOperation;
+#import "JFTransportableOperation.h"
 @protocol JFTransportable;
 
 typedef void(^JFTransportableCompletionHandler)(id<JFTransportable> transportable, NSError* error);
@@ -20,19 +20,19 @@ typedef void(^JFTransportableCompletionHandler)(id<JFTransportable> transportabl
 + (instancetype)defaultTransporter;
 
 // GET
-- (JFTransportableOperation*)GETTransportable:(id<JFTransportable>)transportable withCompletionHandler:(JFTransportableCompletionHandler)completionHandler;
+- (JFTransportableOperation*)GETTransportable:(id<JFTransportable>)transportable completionHandler:(JFTransportableCompletionHandler)completionHandler;
 
 // POST
-- (JFTransportableOperation*)POSTTransportable:(id<JFTransportable>)transportable withCompletionHandler:(JFTransportableCompletionHandler)completionHandler;
+- (JFTransportableOperation*)POSTTransportable:(id<JFTransportable>)transportable completionHandler:(JFTransportableCompletionHandler)completionHandler;
 
 // PUT
-- (JFTransportableOperation*)PUTTransportable:(id<JFTransportable>)transportable withCompletionHandler:(JFTransportableCompletionHandler)completionHandler;
+- (JFTransportableOperation*)PUTTransportable:(id<JFTransportable>)transportable completionHandler:(JFTransportableCompletionHandler)completionHandler;
 
 // PATCH
-- (JFTransportableOperation*)PATCHTransportable:(id<JFTransportable>)transportable withCompletionHandler:(JFTransportableCompletionHandler)completionHandler;
+- (JFTransportableOperation*)PATCHTransportable:(id<JFTransportable>)transportable completionHandler:(JFTransportableCompletionHandler)completionHandler;
 
 // DELETE
-- (JFTransportableOperation*)DELETETransportable:(id<JFTransportable>)transportable withCompletionHandler:(JFTransportableCompletionHandler)completionHandler;
+- (JFTransportableOperation*)DELETETransportable:(id<JFTransportable>)transportable completionHandler:(JFTransportableCompletionHandler)completionHandler;
 
 - (BOOL)cancel:(id<JFTransportable>)transportable;
 
