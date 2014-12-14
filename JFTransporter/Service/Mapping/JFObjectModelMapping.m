@@ -57,6 +57,11 @@ NSArray* JFObjectModelMappingObjectArray(Class __CLASS__, NSString* __PROPERTY__
                     id<JFTransportable> classInstance = [klass new];
                     [self mapResponseObject:responseValue toTransportable:&classInstance];
                     [_transportable setValue:classInstance forKey:property];
+                    SEL selector = NSSelectorFromString(NSStringFromClass(_transportable.class));
+                    if ([classInstance respondsToSelector:selector]) {
+                        NSObject<JFTransportable>* _classInstance = classInstance;
+                        [_classInstance setValue:_transportable forKey:NSStringFromClass(_transportable.class)];
+                    }
                 } else {
                     NSString* reason = @"Classes added to the object mapping dictionary returned by -responseToObjectModelMapping must conform to the JFTransportable protocol.";
                     @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:reason userInfo:@{NSLocalizedDescriptionKey: reason}];
@@ -73,6 +78,11 @@ NSArray* JFObjectModelMappingObjectArray(Class __CLASS__, NSString* __PROPERTY__
                         id<JFTransportable> classInstance = [klass new];
                         [self mapResponseObject:arrayObject toTransportable:&classInstance];
                         [transportableArray addObject:classInstance];
+                        SEL selector = NSSelectorFromString(NSStringFromClass(_transportable.class));
+                        if ([classInstance respondsToSelector:selector]) {
+                            NSObject<JFTransportable>* _classInstance = classInstance;
+                            [_classInstance setValue:_transportable forKey:NSStringFromClass(_transportable.class)];
+                        }
                     }
                 }
                 [_transportable setValue:transportableArray forKey:property];
