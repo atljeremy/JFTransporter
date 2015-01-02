@@ -9,18 +9,43 @@
 #import "JFObjectModelMapping.h"
 #import "JFTransportable.h"
 #import <objc/runtime.h>
+@import CoreData;
 
+NSString* const kJFObjectModelMappingEntityKey   = @"entityName";
 NSString* const kJFObjectModelMappingPropertyKey = @"modelProperty";
 NSString* const kJFObjectModelMappingObjectKey   = @"object";
 static NSInteger const kJFObjectModelMappingArrayObjectIndex   = 0;
 static NSInteger const kJFObjectModelMappingArrayPropertyIndex = 1;
+static NSInteger const kJFObjectModelMappingArrayEntityIndex   = 2;
 
-NSDictionary* JFObjectModelMappingObjectDictionary(Class __CLASS__, NSString* __PROPERTY__) {
-    return @{kJFObjectModelMappingObjectKey: __CLASS__, kJFObjectModelMappingPropertyKey: __PROPERTY__};
+typedef NS_ENUM(NSInteger, JFObjectModelMappingArrayIndex) {
+    JFObjectModelMappingArrayIndexObject,
+    JFObjectModelMappingArrayIndexProperty,
+    JFObjectModelMappingArrayIndexEntity,
+    JFObjectModelMappingArrayIndexCount // Must always be last to represent the 'array.count'
+};
+
+NSDictionary* JFObjectModelMappingObjectDictionary(Class __CLASS__, NSString* __PROPERTY__)
+{
+    return @{kJFObjectModelMappingObjectKey: __CLASS__,
+             kJFObjectModelMappingPropertyKey: __PROPERTY__};
 }
 
-NSArray* JFObjectModelMappingObjectArray(Class __CLASS__, NSString* __PROPERTY__) {
+NSArray* JFObjectModelMappingObjectArray(Class __CLASS__, NSString* __PROPERTY__)
+{
     return @[__CLASS__, __PROPERTY__];
+}
+
+extern NSDictionary* JFObjectModelMappingManagedObjectDictionary(NSString* __ENTITY_NAME__, Class __CLASS__, NSString* __PROPERTY__)
+{
+    return @{kJFObjectModelMappingObjectKey: __CLASS__,
+             kJFObjectModelMappingPropertyKey: __PROPERTY__,
+             kJFObjectModelMappingEntityKey: __ENTITY_NAME__,};
+}
+
+extern NSArray* JFObjectModelMappingManagedObjectArray(NSString* __ENTITY_NAME__, Class __CLASS__, NSString* __PROPERTY__)
+{
+    return @[__CLASS__, __PROPERTY__, __ENTITY_NAME__];
 }
 
 @implementation JFObjectModelMapping
@@ -50,45 +75,45 @@ NSArray* JFObjectModelMappingObjectArray(Class __CLASS__, NSString* __PROPERTY__
         }
         
         if ([value isKindOfClass:[NSDictionary class]]) {
-            NSString* property = value[kJFObjectModelMappingPropertyKey];
-            id klass = value[kJFObjectModelMappingObjectKey];
-            if (class_isMetaClass(object_getClass(klass))) {
-                if (class_conformsToProtocol(klass, @protocol(JFTransportable))) {
+            NSDictionary* _value = value;
+            NSString* entityName = _value[kJFObjectModelMappingEntityKey];
+            NSString* property = _value[kJFObjectModelMappingPropertyKey];
+            id klass = _value[kJFObjectModelMappingObjectKey];
+            if ([self isValidClass:klass]) {
+                if (entityName) {
+                    NSManagedObject* managedObject = [];
+                } else {
                     id<JFTransportable> classInstance = [klass new];
                     [self mapResponseObject:responseValue toTransportable:&classInstance];
                     [_transportable setValue:classInstance forKey:property];
-                    SEL selector = NSSelectorFromString(NSStringFromClass(_transportable.class));
-                    if ([classInstance respondsToSelector:selector]) {
-                        NSObject<JFTransportable>* _classInstance = classInstance;
-                        [_classInstance setValue:_transportable forKey:NSStringFromClass(_transportable.class)];
-                    }
-                } else {
-                    NSString* reason = @"Classes added to the object mapping dictionary returned by -responseToObjectModelMapping must conform to the JFTransportable protocol.";
-                    @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:reason userInfo:@{NSLocalizedDescriptionKey: reason}];
                 }
+            } else {
+                [self throwInvalidTransportableException];
             }
         } else if ([value isKindOfClass:[NSArray class]] && ((NSArray*)value).count == 2) {
-            NSArray* _value = (NSArray*)value;
-            NSString* property = _value[kJFObjectModelMappingArrayPropertyIndex];
-            id klass = _value[kJFObjectModelMappingArrayObjectIndex];
-            if (class_conformsToProtocol(klass, @protocol(JFTransportable))) {
+            NSArray* _value = value;
+            NSString* entityName;
+            if (_value.count == JFObjectModelMappingArrayIndexCount) {
+                entityName = _value[JFObjectModelMappingArrayIndexEntity];
+            }
+            NSString* property = _value[JFObjectModelMappingArrayIndexProperty];
+            id klass = _value[JFObjectModelMappingArrayIndexObject];
+            if ([self isValidClass:klass]) {
                 NSMutableArray* transportableArray = [@[] mutableCopy];
-                if ([responseValue isKindOfClass:[NSArray class]]) {
-                    for (id arrayObject in (NSArray*)responseValue) {
-                        id<JFTransportable> classInstance = [klass new];
-                        [self mapResponseObject:arrayObject toTransportable:&classInstance];
-                        [transportableArray addObject:classInstance];
-                        SEL selector = NSSelectorFromString(NSStringFromClass(_transportable.class));
-                        if ([classInstance respondsToSelector:selector]) {
-                            NSObject<JFTransportable>* _classInstance = classInstance;
-                            [_classInstance setValue:_transportable forKey:NSStringFromClass(_transportable.class)];
+                if (entityName) {
+                    
+                } else {
+                    if ([responseValue isKindOfClass:[NSArray class]]) {
+                        for (id arrayObject in (NSArray*)responseValue) {
+                            id<JFTransportable> classInstance = [klass new];
+                            [self mapResponseObject:arrayObject toTransportable:&classInstance];
+                            [transportableArray addObject:classInstance];
                         }
                     }
                 }
                 [_transportable setValue:transportableArray forKey:property];
             } else {
-                NSString* reason = @"Classes added to the object mapping dictionary returned by -responseToObjectModelMapping must conform to the JFTransportable protocol.";
-                @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:reason userInfo:@{NSLocalizedDescriptionKey: reason}];
+                [self throwInvalidTransportableException];
             }
         } else {
             NSString* property = value;
@@ -136,6 +161,21 @@ NSArray* JFObjectModelMappingObjectArray(Class __CLASS__, NSString* __PROPERTY__
     }
     
     return retVal;
+}
+
+#pragma mark ----------------------
+#pragma mark Helper Methods
+#pragma mark ----------------------
+
++ (BOOL)isValidClass:(Class)klass
+{
+    return class_isMetaClass(object_getClass(klass)) && class_conformsToProtocol(klass, @protocol(JFTransportable));
+}
+
++ (void)throwInvalidTransportableException
+{
+    NSString* reason = @"Classes added to the object mapping dictionary returned by -responseToObjectModelMapping must conform to the JFTransportable protocol.";
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:reason userInfo:@{NSLocalizedDescriptionKey: reason}];
 }
 
 @end
