@@ -16,6 +16,7 @@
 
 @interface JFTransporter ()
 @property (nonatomic, strong) NSOperationQueue* queue;
+@property (nonatomic, strong) NSManagedObjectContext* context;
 - (JFTransportableOperation*)transport:(id<JFTransportable>)transportable completionHandler:(JFTransportableCompletionHandler)completionHandler;
 @end
 
@@ -42,6 +43,16 @@
         _queue.name = @"JFTransporterQueue";
     }
     return self;
+}
+
+#pragma mark ----------------------
+#pragma mark CoreData Support
+#pragma mark ----------------------
+
+- (void)setManagedObjectContext:(NSManagedObjectContext*)context
+{
+    NSAssert(context && [context isKindOfClass:[NSManagedObjectContext class]], @"Only a valid NSManagedObjectContext can be used with JFTransporter.");
+    self.context = context;
 }
 
 #pragma mark ----------------------
@@ -133,7 +144,7 @@
         NSError* error;
         NSDictionary* response = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:&error];
         if (response.count > 0) {
-            [JFObjectModelMapping mapResponseObject:response toTransportable:&_transportable];
+            [JFObjectModelMapping mapResponseObject:response toTransportable:&_transportable inContext:self.context];
         }
         completionHandler(_transportable, error);
     } failure:^(JFTransportableOperation *operation, NSError* error) {

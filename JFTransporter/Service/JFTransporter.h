@@ -7,6 +7,7 @@
 //
 
 @import Foundation;
+@import CoreData;
 #import "JFTransportableOperation.h"
 @protocol JFTransportable;
 
@@ -18,6 +19,13 @@ typedef void(^JFTransportableCompletionHandler)(id<JFTransportable> transportabl
  * @return The default transporter. This should be used for most situations/requests.
  */
 + (instancetype)defaultTransporter;
+
+/**
+ * CoreDate Support
+ *
+ * @return Use this to set the NSMangedObjectContext in which NSManagedObject's should be created/updated. JFTransporter will keep a strong reference to the passed context.
+ */
+- (void)setManagedObjectContext:(NSManagedObjectContext*)context;
 
 // GET
 - (JFTransportableOperation*)GETTransportable:(id<JFTransportable>)transportable completionHandler:(JFTransportableCompletionHandler)completionHandler;

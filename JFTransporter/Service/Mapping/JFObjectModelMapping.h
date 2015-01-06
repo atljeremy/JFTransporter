@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+@import CoreData;
 
 @protocol JFTransportable;
 
@@ -25,6 +26,6 @@ extern NSArray* JFObjectModelMappingManagedObjectArray(NSString* __ENTITY_NAME__
 
 @interface JFObjectModelMapping : NSObject
 
-+ (void)mapResponseObject:(id<NSObject>)response toTransportable:(id<JFTransportable>*)transportable;
++ (void)mapResponseObject:(id<NSObject>)response toTransportable:(id<JFTransportable>*)transportable inContext:(NSManagedObjectContext*)context;
 
 @end

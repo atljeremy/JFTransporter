@@ -50,7 +50,7 @@ extern NSArray* JFObjectModelMappingManagedObjectArray(NSString* __ENTITY_NAME__
 
 @implementation JFObjectModelMapping
 
-+ (void)mapResponseObject:(id<NSObject>)response toTransportable:(id<JFTransportable>*)transportable
++ (void)mapResponseObject:(id<NSObject>)response toTransportable:(id<JFTransportable>*)transportable inContext:(NSManagedObjectContext*)context
 {
     NSObject<JFTransportable>* _transportable = *transportable;
     NSDictionary* map = [*transportable responseToObjectModelMapping];
@@ -81,10 +81,16 @@ extern NSArray* JFObjectModelMappingManagedObjectArray(NSString* __ENTITY_NAME__
             id klass = _value[kJFObjectModelMappingObjectKey];
             if ([self isValidClass:klass]) {
                 if (entityName) {
-                    NSManagedObject* managedObject = [];
+                    id<JFTransportable> object = [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:context];
+                    [self mapResponseObject:responseValue toTransportable:&object inContext:context];
+                    [_transportable setValue:object forKey:property];
+                    NSError* error;
+                    if (![self saveContext:context error:&error]) {
+                        NSLog(@"%s - ERROR: %@", __PRETTY_FUNCTION__, error.localizedDescription);
+                    }
                 } else {
                     id<JFTransportable> classInstance = [klass new];
-                    [self mapResponseObject:responseValue toTransportable:&classInstance];
+                    [self mapResponseObject:responseValue toTransportable:&classInstance inContext:context];
                     [_transportable setValue:classInstance forKey:property];
                 }
             } else {
@@ -101,12 +107,22 @@ extern NSArray* JFObjectModelMappingManagedObjectArray(NSString* __ENTITY_NAME__
             if ([self isValidClass:klass]) {
                 NSMutableArray* transportableArray = [@[] mutableCopy];
                 if (entityName) {
-                    
+                    if ([responseValue isKindOfClass:[NSArray class]]) {
+                        for (id arrayObject in (NSArray*)responseValue) {
+                            id<JFTransportable> object = [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:context];
+                            [self mapResponseObject:arrayObject toTransportable:&object inContext:context];
+                            [transportableArray setValue:object forKey:property];
+                        }
+                        NSError* error;
+                        if (![self saveContext:context error:&error]) {
+                            NSLog(@"%s - ERROR: %@", __PRETTY_FUNCTION__, error.localizedDescription);
+                        }
+                    }
                 } else {
                     if ([responseValue isKindOfClass:[NSArray class]]) {
                         for (id arrayObject in (NSArray*)responseValue) {
                             id<JFTransportable> classInstance = [klass new];
-                            [self mapResponseObject:arrayObject toTransportable:&classInstance];
+                            [self mapResponseObject:arrayObject toTransportable:&classInstance inContext:context];
                             [transportableArray addObject:classInstance];
                         }
                     }
@@ -166,6 +182,21 @@ extern NSArray* JFObjectModelMappingManagedObjectArray(NSString* __ENTITY_NAME__
 #pragma mark ----------------------
 #pragma mark Helper Methods
 #pragma mark ----------------------
+
++ (BOOL)saveContext:(NSManagedObjectContext*)context error:(NSError**)error_p
+{
+    __block BOOL saved = NO;
+    if (context) {
+        [context performBlockAndWait:^{
+            if ([context hasChanges] && [context save:error_p]) {
+                saved = YES;
+                NSLog(@"Failed to save context with error: %@", [*error_p localizedDescription]);
+            }
+        }];
+    }
+    
+    return saved;
+}
 
 + (BOOL)isValidClass:(Class)klass
 {
