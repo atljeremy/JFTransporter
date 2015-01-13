@@ -9,6 +9,7 @@
 #import <XCTest/XCTest.h>
 #import "JFObjectModelMapping.h"
 #import "JFTransportable.h"
+@import CoreData;
 
 @interface Day : NSObject <JFTransportable>
 

@@ -10,13 +10,13 @@
 #import "JFTransportableOperation.h"
 #import "JFTransportable.h"
 #import "JFObjectModelMapping.h"
+#import "JFDataManager.h"
 #import <objc/runtime.h>
 
 #define JFTransporterAssert(_TRANSPORTER) NSAssert([_TRANSPORTER conformsToProtocol:@protocol(JFTransportable)], @"Invliad transportable - must conform to JFTransportable protocol.")
 
 @interface JFTransporter ()
 @property (nonatomic, strong) NSOperationQueue* queue;
-@property (nonatomic, strong) NSManagedObjectContext* context;
 - (JFTransportableOperation*)transport:(id<JFTransportable>)transportable completionHandler:(JFTransportableCompletionHandler)completionHandler;
 @end
 
@@ -52,7 +52,7 @@
 - (void)setManagedObjectContext:(NSManagedObjectContext*)context
 {
     NSAssert(context && [context isKindOfClass:[NSManagedObjectContext class]], @"Only a valid NSManagedObjectContext can be used with JFTransporter.");
-    self.context = context;
+    [JFDataManager.sharedManager setManagedObjectContext:context];
 }
 
 #pragma mark ----------------------
@@ -144,7 +144,7 @@
         NSError* error;
         NSDictionary* response = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:&error];
         if (response.count > 0) {
-            [JFObjectModelMapping mapResponseObject:response toTransportable:&_transportable inContext:self.context];
+            [JFObjectModelMapping mapResponseObject:response toTransportable:&_transportable];
         }
         completionHandler(_transportable, error);
     } failure:^(JFTransportableOperation *operation, NSError* error) {
