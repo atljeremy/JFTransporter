@@ -41,8 +41,14 @@
     BOOL hasChanges = [self.context hasChanges];
     if (hasChanges) {
         [self.context performBlockAndWait:^{
-            if ([self.context save:error_p]) {
-                saved = YES;
+            saved = [self.context save:error_p];
+            
+            NSManagedObjectContext* ancestorContext = self.context.parentContext;
+            while (ancestorContext) {
+                [ancestorContext performBlockAndWait:^{
+                    [ancestorContext save:error_p];
+                }];
+                ancestorContext = ancestorContext.parentContext;
             }
         }];
     }
@@ -60,6 +66,7 @@
 
 - (NSManagedObject<JFTransportable>*)existingObjectWithAttribute:(NSString*)attribute matchingValue:(id)value forEntityName:(NSString*)entityName
 {
+    NSAssert(self.context, @"Must provide an NSManagedObjectContext using -setManagedObjectContext");
     __block NSManagedObject<JFTransportable>* object;
     [self.context performBlockAndWait:^{
         NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];

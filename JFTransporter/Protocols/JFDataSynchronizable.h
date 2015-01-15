@@ -17,11 +17,6 @@
 #pragma mark ----------------------
 
 /**
- * @return Used to tell JFTransporter that this object should be syncchronized. This mean that the -syncAttribute method will be used to determine which model attribute should be used to perform the sync.
- */
-+ (BOOL)shouldSync;
-
-/**
  * @return Used to tell JFTransporter which model attribute should be used to determine the synchronization status (insert, update, delete). In most cases this should be an attribute representing the last time the model was updated. (Ex. updatedAt)
  */
 + (NSString*)managedObjectSyncDateAttribute;

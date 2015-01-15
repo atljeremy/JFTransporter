@@ -122,18 +122,17 @@ id JFObjectModelMappingManagedObjectCollection(NSString* __ENTITY_NAME__, Class 
             NSString* responseDateFormat;
             NSString* responseIdentifierKey;
             if ([klass conformsToProtocol:@protocol(JFDataSynchronizable)]) {
+                performSync = YES;
                 syncDateAttribute       = [klass managedObjectSyncDateAttribute];
                 syncIdentifier          = [klass managedObjectSyncIdentifierAttribute];
                 responseDateKey         = [klass responseObjectSyncDateKey];
                 responseDateFormat      = [klass responseObjectSyncDateFormat];
                 responseIdentifierKey   = [klass responseObjectSyncIdentifierKey];
-                if ((performSync = [klass shouldSync])) {
-                    NSAssert(syncDateAttribute.length > 0, @"Must provide a value for -managedObjectSyncDateAttribute");
-                    NSAssert(syncIdentifier.length > 0, @"Must provide a value for -managedObjectSyncIdentifierAttribute");
-                    NSAssert(responseDateKey.length > 0, @"Must provide a value for -responseObjectSyncDateKey");
-                    NSAssert(responseDateFormat.length > 0, @"Must provide a value for -responseObjectSyncDateFormat");
-                    NSAssert(responseIdentifierKey.length > 0, @"Must provide a value for -responseObjectSyncIdentifierKey");
-                }
+                NSAssert(syncDateAttribute.length > 0, @"Must provide a value for -managedObjectSyncDateAttribute");
+                NSAssert(syncIdentifier.length > 0, @"Must provide a value for -managedObjectSyncIdentifierAttribute");
+                NSAssert(responseDateKey.length > 0, @"Must provide a value for -responseObjectSyncDateKey");
+                NSAssert(responseDateFormat.length > 0, @"Must provide a value for -responseObjectSyncDateFormat");
+                NSAssert(responseIdentifierKey.length > 0, @"Must provide a value for -responseObjectSyncIdentifierKey");
             }
             
             if (performSync) {
@@ -146,7 +145,7 @@ id JFObjectModelMappingManagedObjectCollection(NSString* __ENTITY_NAME__, Class 
             
             NSDate* remoteUpdateAtDate = [self dateFromString:responseObject[responseDateKey] withFormat:responseDateFormat];
             NSDate* localUpdatedAtDate = [managedObject valueForKey:syncDateAttribute];
-            if ([localUpdatedAtDate compare:remoteUpdateAtDate] == NSOrderedAscending) {
+            if (!localUpdatedAtDate || [localUpdatedAtDate compare:remoteUpdateAtDate] == NSOrderedAscending) {
                 // Remote object is newer
                 [self mapResponseObject:responseObject toTransportable:&managedObject];
             } else {
@@ -190,18 +189,17 @@ id JFObjectModelMappingManagedObjectCollection(NSString* __ENTITY_NAME__, Class 
         NSString* responseDateFormat;
         NSString* responseIdentifierKey;
         if ([klass conformsToProtocol:@protocol(JFDataSynchronizable)]) {
+            performSync = YES;
             syncDateAttribute       = [klass managedObjectSyncDateAttribute];
             syncIdentifier          = [klass managedObjectSyncIdentifierAttribute];
             responseDateKey         = [klass responseObjectSyncDateKey];
             responseDateFormat      = [klass responseObjectSyncDateFormat];
             responseIdentifierKey   = [klass responseObjectSyncIdentifierKey];
-            if ((performSync = [klass shouldSync])) {
-                NSAssert(syncDateAttribute.length > 0, @"Must provide a value for -managedObjectSyncDateAttribute");
-                NSAssert(syncIdentifier.length > 0, @"Must provide a value for -managedObjectSyncIdentifierAttribute");
-                NSAssert(responseDateKey.length > 0, @"Must provide a value for -responseObjectSyncDateKey");
-                NSAssert(responseDateFormat.length > 0, @"Must provide a value for -responseObjectSyncDateFormat");
-                NSAssert(responseIdentifierKey.length > 0, @"Must provide a value for -responseObjectSyncIdentifierKey");
-            }
+            NSAssert(syncDateAttribute.length > 0, @"Must provide a value for -managedObjectSyncDateAttribute");
+            NSAssert(syncIdentifier.length > 0, @"Must provide a value for -managedObjectSyncIdentifierAttribute");
+            NSAssert(responseDateKey.length > 0, @"Must provide a value for -responseObjectSyncDateKey");
+            NSAssert(responseDateFormat.length > 0, @"Must provide a value for -responseObjectSyncDateFormat");
+            NSAssert(responseIdentifierKey.length > 0, @"Must provide a value for -responseObjectSyncIdentifierKey");
         }
         
         for (id arrayObject in responseObject) {
@@ -217,7 +215,7 @@ id JFObjectModelMappingManagedObjectCollection(NSString* __ENTITY_NAME__, Class 
             
             NSDate* remoteUpdateAtDate = [self dateFromString:arrayObject[responseDateKey] withFormat:responseDateFormat];
             NSDate* localUpdatedAtDate = [managedObject valueForKey:syncDateAttribute];
-            if ([localUpdatedAtDate compare:remoteUpdateAtDate] == NSOrderedAscending) {
+            if (!localUpdatedAtDate || [localUpdatedAtDate compare:remoteUpdateAtDate] == NSOrderedAscending) {
                 // Remote object is newer
                 [self mapResponseObject:arrayObject toTransportable:&managedObject];
             } else {
