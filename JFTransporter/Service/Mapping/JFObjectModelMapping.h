@@ -13,7 +13,11 @@
 extern NSString* const kJFObjectModelMappingEntityKey;
 extern NSString* const kJFObjectModelMappingPropertyKey;
 extern NSString* const kJFObjectModelMappingObjectKey;
-extern NSString* const kJFObjectModelMappingDatFormatKey;
+extern NSString* const kJFObjectModelMappingDateFormatKey;
+
+// Relationhips
+extern NSString* const kJFObjectModelMappingToOneRelationship;
+extern NSString* const kJFObjectModelMappingToManyRelationship;
 
 extern NSDictionary* JFObjectModelMappingObjectDictionary(Class __CLASS__, NSString* __PROPERTY__);
 extern NSArray* JFObjectModelMappingObjectArray(Class __CLASS__, NSString* __PROPERTY__);

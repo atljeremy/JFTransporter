@@ -8,15 +8,18 @@
 
 #import "JFObjectModelMapping.h"
 #import "JFTransportable.h"
-#import "JFDataSynchronizable.h"
+#import "JFSynchronizable.h"
 #import <objc/runtime.h>
 #import "JFDataManager.h"
 @import CoreData;
 
-NSString* const kJFObjectModelMappingEntityKey    = @"entityName";
-NSString* const kJFObjectModelMappingPropertyKey  = @"modelProperty";
-NSString* const kJFObjectModelMappingObjectKey    = @"object";
-NSString* const kJFObjectModelMappingDatFormatKey = @"dateFormat";
+NSString* const kJFObjectModelMappingEntityKey     = @"entityName";
+NSString* const kJFObjectModelMappingPropertyKey   = @"modelProperty";
+NSString* const kJFObjectModelMappingObjectKey     = @"object";
+NSString* const kJFObjectModelMappingDateFormatKey = @"dateFormat";
+
+NSString* const kJFObjectModelMappingToOneRelationship = @"ToOne";
+NSString* const kJFObjectModelMappingToManyRelationship = @"ToMany";
 
 typedef NS_ENUM(NSInteger, JFObjectModelMappingArrayIndex) {
     JFObjectModelMappingArrayIndexObject,
@@ -25,6 +28,10 @@ typedef NS_ENUM(NSInteger, JFObjectModelMappingArrayIndex) {
     JFObjectModelMappingArrayIndexCollection,
     JFObjectModelMappingArrayIndexCount // Must always be last to represent the 'array.count'
 };
+
+#pragma mark ----------------------
+#pragma mark Functions
+#pragma mark ----------------------
 
 NSDictionary* JFObjectModelMappingObjectDictionary(Class __CLASS__, NSString* __PROPERTY__)
 {
@@ -39,7 +46,7 @@ NSArray* JFObjectModelMappingObjectArray(Class __CLASS__, NSString* __PROPERTY__
 
 NSDictionary* JFObjectModelMappingDateUsingFormat(NSString* __DATE_FORMAT__, NSString* __PROPERTY__)
 {
-    return @{kJFObjectModelMappingDatFormatKey: __DATE_FORMAT__,
+    return @{kJFObjectModelMappingDateFormatKey: __DATE_FORMAT__,
              kJFObjectModelMappingPropertyKey: __PROPERTY__};
 }
 
@@ -62,7 +69,7 @@ id JFObjectModelMappingManagedObjectCollection(NSString* __ENTITY_NAME__, Class 
 
 @implementation JFObjectModelMapping
 
-+ (void)mapResponseObject:(id<NSObject>)response toTransportable:(id<JFTransportable>*)transportable
++ (void)mapResponseObject:(id<NSObject>)response toTransportable:(id<JFTransportable> *)transportable
 {
     NSObject<JFTransportable>* _transportable = *transportable;
     NSDictionary* map = [*transportable responseToObjectModelMapping];
@@ -82,16 +89,9 @@ id JFObjectModelMappingManagedObjectCollection(NSString* __ENTITY_NAME__, Class 
             
             NSString* property = value;
             [_transportable setValue:responseObject forKey:property];
-            
+
         }
     }];
-    
-    NSError* error;
-    if (![JFDataManager.sharedManager saveContextWithError:&error]) {
-        if (error) {
-            NSLog(@"%s - ERROR: %@", __PRETTY_FUNCTION__, error.localizedDescription);
-        }
-    }
 }
 
 #pragma mark ----------------------
@@ -102,7 +102,7 @@ id JFObjectModelMappingManagedObjectCollection(NSString* __ENTITY_NAME__, Class 
 {
     NSDictionary* _values = values;
     
-    NSString* dateFormat = _values[kJFObjectModelMappingDatFormatKey];
+    NSString* dateFormat = _values[kJFObjectModelMappingDateFormatKey];
     NSString* property = _values[kJFObjectModelMappingPropertyKey];
     
     if (dateFormat.length > 0 && property.length > 0) {
@@ -117,26 +117,31 @@ id JFObjectModelMappingManagedObjectCollection(NSString* __ENTITY_NAME__, Class 
             
             BOOL performSync = NO;
             NSString* syncDateAttribute;
-            NSString* syncIdentifier;
             NSString* responseDateKey;
             NSString* responseDateFormat;
-            NSString* responseIdentifierKey;
-            if ([klass conformsToProtocol:@protocol(JFDataSynchronizable)]) {
+            __block NSMutableString* predicateFormat;
+            NSDictionary* predicateValueIDs;
+            if ([klass conformsToProtocol:@protocol(JFSynchronizable)]) {
                 performSync = YES;
                 syncDateAttribute       = [klass managedObjectSyncDateAttribute];
-                syncIdentifier          = [klass managedObjectSyncIdentifierAttribute];
                 responseDateKey         = [klass responseObjectSyncDateKey];
                 responseDateFormat      = [klass responseObjectSyncDateFormat];
-                responseIdentifierKey   = [klass responseObjectSyncIdentifierKey];
-                NSAssert(syncDateAttribute.length > 0, @"Must provide a value for -managedObjectSyncDateAttribute");
-                NSAssert(syncIdentifier.length > 0, @"Must provide a value for -managedObjectSyncIdentifierAttribute");
-                NSAssert(responseDateKey.length > 0, @"Must provide a value for -responseObjectSyncDateKey");
-                NSAssert(responseDateFormat.length > 0, @"Must provide a value for -responseObjectSyncDateFormat");
-                NSAssert(responseIdentifierKey.length > 0, @"Must provide a value for -responseObjectSyncIdentifierKey");
+                predicateFormat         = [[klass syncPredicateFormat] mutableCopy];
+                predicateValueIDs       = [klass syncPredicateValueIdentifiers];
+                NSAssert(syncDateAttribute.length > 0, @"Must provide a value for +managedObjectSyncDateAttribute");
+                NSAssert(responseDateKey.length > 0, @"Must provide a value for +responseObjectSyncDateKey");
+                NSAssert(responseDateFormat.length > 0, @"Must provide a value for +responseObjectSyncDateFormat");
+                NSAssert(predicateFormat.length > 0, @"Must provide a value for +syncPredicateFormat");
+                NSAssert(predicateValueIDs.count > 0, @"Must provide a value for +syncPredicateValueIdentifiers");
             }
             
             if (performSync) {
-                managedObject = [JFDataManager.sharedManager existingObjectWithAttribute:syncIdentifier matchingValue:responseObject[responseIdentifierKey] forEntityName:entityName];
+                [predicateValueIDs enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+                    NSString* value = [[self valueFromResponse:responseObject forKey:obj] stringValue];
+                    [predicateFormat replaceOccurrencesOfString:key withString:value options:NSCaseInsensitiveSearch range:NSMakeRange(0, predicateFormat.length)];
+                }];
+                
+                managedObject = [JFDataManager.sharedManager existingObjectWithPredicateFormat:predicateFormat forEntityName:entityName];
             }
             
             if (!managedObject) {
@@ -152,7 +157,29 @@ id JFObjectModelMappingManagedObjectCollection(NSString* __ENTITY_NAME__, Class 
                 // Local object is newer
             }
             
-            [_transportable setValue:managedObject forKey:property];
+            NSDictionary* relationshipKeyPaths;
+            if ([[_transportable class] respondsToSelector:@selector(relationshipKeyPaths)]) {
+                relationshipKeyPaths = [[_transportable class] relationshipKeyPaths];
+            }
+            
+            NSString* relationship = [relationshipKeyPaths valueForKey:property];
+            if ([relationship isEqualToString:kJFObjectModelMappingToManyRelationship]) {
+                id objects = [_transportable valueForKey:property];
+                if ([objects isKindOfClass:[NSSet class]] || [objects isKindOfClass:[NSOrderedSet class]]) {
+                    [objects addObject:managedObject];
+                }
+            } else if ([relationship isEqualToString:kJFObjectModelMappingToOneRelationship]) {
+                [_transportable setValue:managedObject forKey:property];
+            } else {
+                [_transportable setValue:managedObject forKey:property];
+            }
+            
+            NSError* error;
+            if (![JFDataManager.sharedManager saveContextWithError:&error]) {
+                if (error) {
+                    NSLog(@"%s - ERROR: %@", __PRETTY_FUNCTION__, error.localizedDescription);
+                }
+            }
         } else {
             id<JFTransportable> classInstance = [(id)klass new];
             [self mapResponseObject:responseObject toTransportable:&classInstance];
@@ -184,29 +211,35 @@ id JFObjectModelMappingManagedObjectCollection(NSString* __ENTITY_NAME__, Class 
         
         BOOL performSync = NO;
         NSString* syncDateAttribute;
-        NSString* syncIdentifier;
         NSString* responseDateKey;
         NSString* responseDateFormat;
-        NSString* responseIdentifierKey;
-        if ([klass conformsToProtocol:@protocol(JFDataSynchronizable)]) {
+        __block NSMutableString* predicateFormat;
+        NSDictionary* predicateValueIDs;
+        if ([klass conformsToProtocol:@protocol(JFSynchronizable)]) {
             performSync = YES;
             syncDateAttribute       = [klass managedObjectSyncDateAttribute];
-            syncIdentifier          = [klass managedObjectSyncIdentifierAttribute];
             responseDateKey         = [klass responseObjectSyncDateKey];
             responseDateFormat      = [klass responseObjectSyncDateFormat];
-            responseIdentifierKey   = [klass responseObjectSyncIdentifierKey];
-            NSAssert(syncDateAttribute.length > 0, @"Must provide a value for -managedObjectSyncDateAttribute");
-            NSAssert(syncIdentifier.length > 0, @"Must provide a value for -managedObjectSyncIdentifierAttribute");
-            NSAssert(responseDateKey.length > 0, @"Must provide a value for -responseObjectSyncDateKey");
-            NSAssert(responseDateFormat.length > 0, @"Must provide a value for -responseObjectSyncDateFormat");
-            NSAssert(responseIdentifierKey.length > 0, @"Must provide a value for -responseObjectSyncIdentifierKey");
+            predicateFormat         = [[klass syncPredicateFormat] mutableCopy];
+            predicateValueIDs       = [klass syncPredicateValueIdentifiers];
+            NSAssert(syncDateAttribute.length > 0, @"Must provide a value for +managedObjectSyncDateAttribute");
+            NSAssert(responseDateKey.length > 0, @"Must provide a value for +responseObjectSyncDateKey");
+            NSAssert(responseDateFormat.length > 0, @"Must provide a value for +responseObjectSyncDateFormat");
+            NSAssert(predicateFormat.length > 0, @"Must provide a value for +syncPredicateFormat");
+            NSAssert(predicateValueIDs.count > 0, @"Must provide a value for +syncPredicateValueIdentifiers");
         }
         
         for (id arrayObject in responseObject) {
             NSManagedObject<JFTransportable>* managedObject;
             
             if (performSync) {
-                managedObject = [JFDataManager.sharedManager existingObjectWithAttribute:syncIdentifier matchingValue:arrayObject[responseIdentifierKey] forEntityName:entityName];
+                __block NSString* parsedPredicateFormat = predicateFormat;
+                [predicateValueIDs enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+                    NSString* value = [[self valueFromResponse:arrayObject forKey:obj] stringValue];
+                    parsedPredicateFormat = [parsedPredicateFormat stringByReplacingOccurrencesOfString:key withString:value];
+                }];
+                
+                managedObject = [JFDataManager.sharedManager existingObjectWithPredicateFormat:parsedPredicateFormat forEntityName:entityName];
             }
             
             if (!managedObject) {
@@ -223,6 +256,13 @@ id JFObjectModelMappingManagedObjectCollection(NSString* __ENTITY_NAME__, Class 
             }
             
             [transportableArray addObject:managedObject];
+        }
+        
+        NSError* error;
+        if (![JFDataManager.sharedManager saveContextWithError:&error]) {
+            if (error) {
+                NSLog(@"%s - ERROR: %@", __PRETTY_FUNCTION__, error.localizedDescription);
+            }
         }
     } else {
         for (id arrayObject in responseObject) {
@@ -305,9 +345,20 @@ id JFObjectModelMappingManagedObjectCollection(NSString* __ENTITY_NAME__, Class 
 #pragma mark Validation
 #pragma mark ----------------------
 
++ (BOOL)isValidMetaClass:(Class)klass
+{
+    return class_isMetaClass(object_getClass(klass));
+}
+
 + (BOOL)isValidClass:(Class)klass
 {
-    return class_isMetaClass(object_getClass(klass)) && class_conformsToProtocol(klass, @protocol(JFTransportable));
+    return [self isValidMetaClass:klass] && [klass conformsToProtocol:@protocol(JFTransportable)];
+}
+
++ (void)assertValidPredicateFormat:(NSString*)format
+{
+    NSAssert(format.length > 0, @"Must provide a valid string value for +relationshipsPredicateFormat.");
+    NSAssert([format rangeOfString:@"="].location != NSNotFound, @"String returned from +relationshipsPredicateFormat must contain an = in order to be a valid relationship predicate format.");
 }
 
 #pragma mark ----------------------

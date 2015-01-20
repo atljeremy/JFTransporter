@@ -16,7 +16,7 @@
 		3F129C271A2A170D00DBCE27 /* JFTransportableOperation.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1A3B5A131A290B7F0050545F /* JFTransportableOperation.h */; };
 		3F129C281A2A170D00DBCE27 /* JFTransporter.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1A3B5A191A2910230050545F /* JFTransporter.h */; };
 		3F7979F51A601BB0008F5C5B /* JFDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F7979F41A601BB0008F5C5B /* JFDataManager.m */; };
-		3F7979FA1A65B79E008F5C5B /* JFDataSynchronizable.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3F7979F91A65B746008F5C5B /* JFDataSynchronizable.h */; };
+		3F7979FA1A65B79E008F5C5B /* JFSynchronizable.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3F7979F91A65B746008F5C5B /* JFSynchronizable.h */; };
 		3F7979FF1A65BB53008F5C5B /* JFTransportable.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1A3B5A101A290A1B0050545F /* JFTransportable.h */; };
 /* End PBXBuildFile section */
 
@@ -38,7 +38,7 @@
 			dstSubfolderSpec = 16;
 			files = (
 				3F7979FF1A65BB53008F5C5B /* JFTransportable.h in CopyFiles */,
-				3F7979FA1A65B79E008F5C5B /* JFDataSynchronizable.h in CopyFiles */,
+				3F7979FA1A65B79E008F5C5B /* JFSynchronizable.h in CopyFiles */,
 				1A3B5A341A2CE18C0050545F /* JFObjectModelMapping.h in CopyFiles */,
 				3F129C271A2A170D00DBCE27 /* JFTransportableOperation.h in CopyFiles */,
 				3F129C281A2A170D00DBCE27 /* JFTransporter.h in CopyFiles */,
@@ -61,7 +61,7 @@
 		1A3B5A451A2D1DC90050545F /* JFObjectModelMappingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JFObjectModelMappingTests.m; sourceTree = "<group>"; };
 		3F7979F31A601BB0008F5C5B /* JFDataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JFDataManager.h; sourceTree = "<group>"; };
 		3F7979F41A601BB0008F5C5B /* JFDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JFDataManager.m; sourceTree = "<group>"; };
-		3F7979F91A65B746008F5C5B /* JFDataSynchronizable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JFDataSynchronizable.h; sourceTree = "<group>"; };
+		3F7979F91A65B746008F5C5B /* JFSynchronizable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JFSynchronizable.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,7 +131,7 @@
 			isa = PBXGroup;
 			children = (
 				1A3B5A101A290A1B0050545F /* JFTransportable.h */,
-				3F7979F91A65B746008F5C5B /* JFDataSynchronizable.h */,
+				3F7979F91A65B746008F5C5B /* JFSynchronizable.h */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";

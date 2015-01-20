@@ -15,8 +15,8 @@
 + (instancetype)sharedManager;
 - (void)setManagedObjectContext:(NSManagedObjectContext*)context;
 
-- (NSManagedObject<JFTransportable>*)existingObjectWithAttribute:(NSString*)attribute matchingValue:(id)value forEntityName:(NSString*)entityName;
-- (NSManagedObject<JFTransportable>*)existingObjectWithPredicate:(NSPredicate*)predicate forEntityName:(NSString*)entityName;
+//- (NSManagedObject<JFTransportable>*)existingObjectWithAttribute:(NSString*)attribute matchingValue:(id)value forEntityName:(NSString*)entityName;
+- (NSManagedObject<JFTransportable>*)existingObjectWithPredicateFormat:(NSString*)predicateFormat forEntityName:(NSString*)entityName;
 - (NSManagedObject<JFTransportable>*)insertNewObjectForEntityForName:(NSString*)entityName;
 - (void)deleteObject:(NSManagedObject<JFTransportable>*)object;
 - (BOOL)saveContextWithError:(NSError**)error_p;

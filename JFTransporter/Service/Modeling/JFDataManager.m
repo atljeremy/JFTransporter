@@ -8,6 +8,7 @@
 
 #import "JFDataManager.h"
 #import "JFTransportable.h"
+#import "JFSynchronizable.h"
 
 @interface JFDataManager ()
 @property (nonatomic, strong) NSManagedObjectContext* context;
@@ -64,7 +65,7 @@
 #pragma mark CRUD
 #pragma mark ----------------------
 
-- (NSManagedObject<JFTransportable>*)existingObjectWithAttribute:(NSString*)attribute matchingValue:(id)value forEntityName:(NSString*)entityName
+- (NSManagedObject<JFTransportable>*)existingObjectWithPredicateFormat:(NSString*)predicateFormat forEntityName:(NSString*)entityName
 {
     NSAssert(self.context, @"Must provide an NSManagedObjectContext using -setManagedObjectContext");
     __block NSManagedObject<JFTransportable>* object;
@@ -73,13 +74,13 @@
         NSEntityDescription *entity = [NSEntityDescription entityForName:entityName inManagedObjectContext:self.context];
         [fetchRequest setEntity:entity];
 
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"%K = %@", attribute, value];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:predicateFormat];
         [fetchRequest setPredicate:predicate];
+        
         fetchRequest.fetchBatchSize = 1;
         fetchRequest.fetchLimit = 1;
         
-        NSError *error = nil;
-        NSArray *fetchedObjects = [self.context executeFetchRequest:fetchRequest error:&error];
+        NSArray *fetchedObjects = [self.context executeFetchRequest:fetchRequest error:nil];
         if (fetchedObjects.count == 1) {
             object = fetchedObjects.firstObject;
         }

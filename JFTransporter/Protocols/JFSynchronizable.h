@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol JFDataSynchronizable <NSObject>
+@protocol JFSynchronizable <NSObject>
 
 @required
 
@@ -22,11 +22,6 @@
 + (NSString*)managedObjectSyncDateAttribute;
 
 /**
- * @return Used to tell JFTransporter what model addtribute to use to determine unique models. This could be an NSNumber attribute named "identifier" that has a value of the database ID in your remote API.
- */
-+ (NSString*)managedObjectSyncIdentifierAttribute;
-
-/**
  * @return Used to tell JFTransporter which response object key should be used to get the Date representing the last time the object was updated.
  */
 + (NSString*)responseObjectSyncDateKey;
@@ -36,9 +31,12 @@
  */
 + (NSString*)responseObjectSyncDateFormat;
 
-/**
- * @return Used to tell JFTransporter what response key to use to determine unique models.
- */
-+ (NSString*)responseObjectSyncIdentifierKey;
++ (NSString*)syncPredicateFormat;
+
++ (NSDictionary*)syncPredicateValueIdentifiers;
+
+@optional
+
++ (NSDictionary*)relationshipKeyPaths;
 
 @end
