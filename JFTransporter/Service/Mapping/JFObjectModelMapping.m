@@ -13,13 +13,14 @@
 #import "JFDataManager.h"
 @import CoreData;
 
-NSString* const kJFObjectModelMappingEntityKey     = @"entityName";
-NSString* const kJFObjectModelMappingPropertyKey   = @"modelProperty";
-NSString* const kJFObjectModelMappingObjectKey     = @"object";
-NSString* const kJFObjectModelMappingDateFormatKey = @"dateFormat";
+NSString* const kJFObjectModelMappingEntityKey       = @"JFObjectModelMappingEntityKey";
+NSString* const kJFObjectModelMappingPropertyKey     = @"JFObjectModelMappingPropertyKey";
+NSString* const kJFObjectModelMappingObjectKey       = @"JFObjectModelMappingObjectKey";
+NSString* const kJFObjectModelMappingDateFormatKey   = @"JFObjectModelMappingDateFormatKey";
+NSString* const kJFObjectModelMappingRelationshipKey = @"JFObjectModelMappingRelationshipKey";
 
-NSString* const kJFObjectModelMappingToOneRelationship = @"ToOne";
-NSString* const kJFObjectModelMappingToManyRelationship = @"ToMany";
+NSString* const kJFObjectModelMappingToOneRelationship  = @"JFObjectModelMappingToOneRelationship";
+NSString* const kJFObjectModelMappingToManyRelationship = @"JFObjectModelMappingToManyRelationship";
 
 typedef NS_ENUM(NSInteger, JFObjectModelMappingArrayIndex) {
     JFObjectModelMappingArrayIndexObject,
@@ -32,6 +33,18 @@ typedef NS_ENUM(NSInteger, JFObjectModelMappingArrayIndex) {
 #pragma mark ----------------------
 #pragma mark Functions
 #pragma mark ----------------------
+
+NSDictionary* JFObjectModelMappingToOneRelationship(Class __CLASS__)
+{
+    return @{kJFObjectModelMappingObjectKey: __CLASS__,
+             kJFObjectModelMappingRelationshipKey: kJFObjectModelMappingToOneRelationship};
+}
+
+NSDictionary* JFObjectModelMappingToManyRelationship(Class __CLASS__)
+{
+    return @{kJFObjectModelMappingObjectKey: __CLASS__,
+             kJFObjectModelMappingRelationshipKey: kJFObjectModelMappingToManyRelationship};
+}
 
 NSDictionary* JFObjectModelMappingObjectDictionary(Class __CLASS__, NSString* __PROPERTY__)
 {
@@ -157,21 +170,36 @@ id JFObjectModelMappingManagedObjectCollection(NSString* __ENTITY_NAME__, Class 
                 // Local object is newer
             }
             
-            NSDictionary* relationshipKeyPaths;
             if ([[_transportable class] respondsToSelector:@selector(relationshipKeyPaths)]) {
-                relationshipKeyPaths = [[_transportable class] relationshipKeyPaths];
-            }
-            
-            NSString* relationship = [relationshipKeyPaths valueForKey:property];
-            if ([relationship isEqualToString:kJFObjectModelMappingToManyRelationship]) {
-                id objects = [_transportable valueForKey:property];
-                if ([objects isKindOfClass:[NSSet class]] || [objects isKindOfClass:[NSOrderedSet class]]) {
-                    [objects addObject:managedObject];
+                NSDictionary* relationshipKeyPaths = [[_transportable class] relationshipKeyPaths];
+                NSDictionary* relationshipDictionary = [relationshipKeyPaths valueForKey:property];
+                __block Class relationshipClass = relationshipDictionary[kJFObjectModelMappingObjectKey];
+                __block NSString* relationship;
+                __block NSString* relationshipKeyPath;
+                if (relationshipClass && [relationshipClass isEqual:managedObject.class] && [relationshipClass respondsToSelector:@selector(relationshipKeyPaths)]) {
+                    relationshipKeyPaths = [relationshipClass relationshipKeyPaths];
+                    [relationshipKeyPaths enumerateKeysAndObjectsUsingBlock:^(NSString* key, NSDictionary* obj, BOOL *stop) {
+                        if ([obj[kJFObjectModelMappingObjectKey] isEqual:_transportable.class]) {
+                            relationship = obj[kJFObjectModelMappingRelationshipKey];
+                            relationshipKeyPath = key;
+                        }
+                    }];
                 }
-            } else if ([relationship isEqualToString:kJFObjectModelMappingToOneRelationship]) {
-                [_transportable setValue:managedObject forKey:property];
-            } else {
-                [_transportable setValue:managedObject forKey:property];
+                
+                if (relationshipKeyPath) {
+                    if ([relationship isEqualToString:kJFObjectModelMappingToManyRelationship]) {
+                        id objects = [managedObject valueForKey:relationshipKeyPath];
+                        if ([objects isKindOfClass:[NSSet class]] || [objects isKindOfClass:[NSOrderedSet class]]) {
+                            id mutableObjects = [objects mutableCopy];
+                            [mutableObjects addObject:_transportable];
+                            [managedObject setValue:mutableObjects forKey:relationshipKeyPath];
+                        }
+                    } else if ([relationship isEqualToString:kJFObjectModelMappingToOneRelationship]) {
+                        [_transportable setValue:managedObject forKey:property];
+                    }
+                } else {
+                    [_transportable setValue:managedObject forKey:property];
+                }
             }
             
             NSError* error;
@@ -206,7 +234,7 @@ id JFObjectModelMappingManagedObjectCollection(NSString* __ENTITY_NAME__, Class 
     Class klass = _values[JFObjectModelMappingArrayIndexObject];
     NSAssert([self isValidClass:klass], @"Classes added to the object mapping dictionary returned by -responseToObjectModelMapping must conform to the JFTransportable protocol.");
     
-    id transportableArray = [[collection new] mutableCopy];
+    id transportableCollection = [[collection new] mutableCopy];
     if (entityName) {
         
         BOOL performSync = NO;
@@ -255,7 +283,7 @@ id JFObjectModelMappingManagedObjectCollection(NSString* __ENTITY_NAME__, Class 
                 // Local object is newer
             }
             
-            [transportableArray addObject:managedObject];
+            [transportableCollection addObject:managedObject];
         }
         
         NSError* error;
@@ -268,11 +296,11 @@ id JFObjectModelMappingManagedObjectCollection(NSString* __ENTITY_NAME__, Class 
         for (id arrayObject in responseObject) {
             id<JFTransportable> classInstance = [(id)klass new];
             [self mapResponseObject:arrayObject toTransportable:&classInstance];
-            [transportableArray addObject:classInstance];
+            [transportableCollection addObject:classInstance];
         }
     }
     
-    [_transportable setValue:transportableArray forKey:property];
+    [_transportable setValue:transportableCollection forKey:property];
 }
 
 #pragma mark ----------------------

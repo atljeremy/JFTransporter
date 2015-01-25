@@ -10,15 +10,9 @@
 
 @protocol JFTransportable;
 
-extern NSString* const kJFObjectModelMappingEntityKey;
-extern NSString* const kJFObjectModelMappingPropertyKey;
-extern NSString* const kJFObjectModelMappingObjectKey;
-extern NSString* const kJFObjectModelMappingDateFormatKey;
-
-// Relationhips
-extern NSString* const kJFObjectModelMappingToOneRelationship;
-extern NSString* const kJFObjectModelMappingToManyRelationship;
-
+/**
+ * Nested Object Mapping Helpers
+ */
 extern NSDictionary* JFObjectModelMappingObjectDictionary(Class __CLASS__, NSString* __PROPERTY__);
 extern NSArray* JFObjectModelMappingObjectArray(Class __CLASS__, NSString* __PROPERTY__);
 
@@ -28,10 +22,16 @@ extern NSArray* JFObjectModelMappingObjectArray(Class __CLASS__, NSString* __PRO
 extern NSDictionary* JFObjectModelMappingDateUsingFormat(NSString* __DATE_FORMAT__, NSString* __PROPERTY__);
 
 /**
- * For use with CoreData NSManagedObject subclasses.
+ * Helpers for use with Core Data and NSManagedObject subclasses
  */
 extern NSDictionary* JFObjectModelMappingManagedObjectDictionary(NSString* __ENTITY_NAME__, Class __CLASS__, NSString* __PROPERTY__);
 extern id JFObjectModelMappingManagedObjectCollection(NSString* __ENTITY_NAME__, Class __COLLECTION_CLASS__, Class __MANAGED_OBJECT_CLASS__, NSString* __PROPERTY__);
+
+/**
+ * Relationhips
+ */
+extern NSDictionary* JFObjectModelMappingToOneRelationship(Class __CLASS__);
+extern NSDictionary* JFObjectModelMappingToManyRelationship(Class __CLASS__);
 
 @interface JFObjectModelMapping : NSObject
 
