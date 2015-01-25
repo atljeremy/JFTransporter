@@ -11,7 +11,7 @@
 
 static NSString* const kJFTranportableOpertaionErrorDomain = @"JFTranportableOpertaionErrorDomain";
 
-@interface JFTransportableOperation()
+@interface JFTransportableOperation() <NSURLSessionDataDelegate, NSURLSessionDelegate, NSURLSessionTaskDelegate>
 @property (nonatomic, strong, readwrite) id<JFTransportable> transportable;
 @property (nonatomic, strong, readwrite) NSHTTPURLResponse *response;
 @property (nonatomic, strong, readwrite) NSData *responseData;
@@ -114,9 +114,20 @@ static NSString* const kJFTranportableOpertaionErrorDomain = @"JFTranportableOpe
             return;
         }
         
-        NSHTTPURLResponse* urlResponse;
-        NSError* error;
-        self.responseData = [NSURLConnection sendSynchronousRequest:urlRequest returningResponse:&urlResponse error:&error];
+//        NSHTTPURLResponse* urlResponse;
+//        NSError* error;
+//        self.responseData = [NSURLConnection sendSynchronousRequest:urlRequest returningResponse:&urlResponse error:&error];
+        
+        dispatch_semaphore_t semephore = dispatch_semaphore_create(0);
+        
+        NSURLSession* session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:[NSOperationQueue currentQueue]];
+        [[session dataTaskWithRequest:urlRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+            self.responseData = data;
+            self.response = (NSHTTPURLResponse*)response;
+            dispatch_semaphore_signal(semephore);
+        }] resume];
+        
+        dispatch_semaphore_wait(semephore, DISPATCH_TIME_FOREVER);
         
         if (self.isCancelled) {
             [self completeOperation];
@@ -135,9 +146,9 @@ static NSString* const kJFTranportableOpertaionErrorDomain = @"JFTranportableOpe
             return;
         }
         
-        if (urlResponse) {
-            self.response = urlResponse;
-        }
+//        if (urlResponse) {
+//            self.response = urlResponse;
+//        }
         
         [self completeOperation];
     }
@@ -182,5 +193,14 @@ static NSString* const kJFTranportableOpertaionErrorDomain = @"JFTranportableOpe
     return error;
 }
 
+#pragma mark ----------------------
+#pragma mark NSURLSessionDelegate
+#pragma mark ----------------------
+
+- (void)URLSession:(NSURLSession *)session didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
+ completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential *credential))completionHandler
+{
+    NSLog(@"Here");
+}
 
 @end
