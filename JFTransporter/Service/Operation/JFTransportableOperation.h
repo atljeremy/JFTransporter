@@ -7,14 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-
-#ifndef NS_DESIGNATED_INITIALIZER
-#if __has_attribute(objc_designated_initializer)
-#define NS_DESIGNATED_INITIALIZER __attribute__((objc_designated_initializer))
-#else
-#define NS_DESIGNATED_INITIALIZER
-#endif
-#endif
+#import "JFTransportableResponse.h"
 
 @protocol JFTransportable;
 @class JFTransportableOperation;
@@ -22,7 +15,7 @@
 static NSString* const kJFTransportableURLKey;
 static NSString* const kJFTransportableHTTPMethodKey;
 
-typedef void (^JFTransportableOperationSuccessBlock)(JFTransportableOperation* operation, id responseObject);
+typedef void (^JFTransportableOperationSuccessBlock)(JFTransportableOperation* operation, JFTransportableResponse* response);
 typedef void (^JFTransportableOperationErrorBlock)(JFTransportableOperation* operation, NSError* error);
 
 @interface JFTransportableOperation : NSOperation
@@ -30,13 +23,47 @@ typedef void (^JFTransportableOperationErrorBlock)(JFTransportableOperation* ope
 @property (readwrite, getter=isExecuting) BOOL executing;
 @property (readwrite, getter=isFinished) BOOL finished;
 @property (nonatomic, strong, readonly) id<JFTransportable> transportable;
-@property (nonatomic, strong, readonly) NSHTTPURLResponse *response;
-@property (nonatomic, strong, readonly) NSData *responseData;
+@property (nonatomic, strong, readonly) JFTransportableResponse* response;
+@property (nonatomic, assign) HTTPStatusCodeRange acceptableStatusCodeRange;
 @property (nonatomic, strong, readonly) NSError *error;
 
-- (instancetype)initWithTransportable:(id<JFTransportable>)transportable NS_DESIGNATED_INITIALIZER;
+/**
+ * DESIGNATED INITIALIZER
+ *
+ * @return An instance of JFTransportableOperation configured with the passed in JFTransportable and HTTPStatusCodeRange
+ * @param transportable The JFTransportable to be used to build the request
+ * @param statusCodeRange The acceptable HTTPStatusCodeRange to be used for validating an acceptable status code for the request/response
+ */
+- (instancetype)initWithTransportable:(id<JFTransportable>)transportable acceptingStatusCodeInRange:(HTTPStatusCodeRange)statusCodeRange NS_DESIGNATED_INITIALIZER;
+
+/**
+ * CONVENIENCE INITIALIZER
+ *
+ * @return An instance of JFTransportableOperation configured with the passed in JFTransportable. This initializer will use a default acceptable HTTPStatusCodeRange consisting of a range of 200 - 226
+ * @param transportable The JFTransportable to be used to build the request
+ */
+- (instancetype)initWithTransportable:(id<JFTransportable>)transportable;
+
+/**
+ * CONVENIENCE INITIALIZER
+ *
+ * @return An instance of JFTransportableOperation configured with the passed in JFTransportable. This initializer will use a default acceptable HTTPStatusCodeRange consisting of a range of 200 - 226
+ * @param transportable The JFTransportable to be used to build the request
+ */
 + (instancetype)operationwithTransportable:(id<JFTransportable>)transportable;
 
+/**
+ * CONVENIENCE INITIALIZER
+ *
+ * @return An instance of JFTransportableOperation configured with the passed in JFTransportable and HTTPStatusCodeRange
+ * @param transportable The JFTransportable to be used to build the request
+ * @param statusCodeRange The acceptable HTTPStatusCodeRange to be used for validating an acceptable status code for the request/response
+ */
++ (instancetype)operationwithTransportable:(id<JFTransportable>)transportable acceptingStatusCodeInRange:(HTTPStatusCodeRange)statusCodeRange;
+
+/**
+ * @return Used to set the success and failure completion hanlders for the operation.
+ */
 - (void)setCompletionBlockWithSuccess:(JFTransportableOperationSuccessBlock)success failure:(JFTransportableOperationErrorBlock)failure;
 
 @end

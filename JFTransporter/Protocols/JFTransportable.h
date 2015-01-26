@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "JFObjectModelMapping.h"
+#import "JFTransportableResponse.h"
 
 @protocol JFTransportable <NSObject>
 
@@ -107,6 +108,15 @@
  * @return A dictionary with all custom headers to use for the request.
  */
 - (NSDictionary*)DELETEHTTPHeaderFields;
+
+#pragma mark ----------------------
+#pragma mark Acceptable Status Codes
+#pragma mark ----------------------
+
+/**
+ * @return Used to tell JFTransporter what HTTP status codes are acceptable. If this is not impelemented a default range of HTTPStauseCode's will be used with values 200 - 226.
+ */
+- (HTTPStatusCodeRange)acceptableStatusCodeRange;
 
 @required
 

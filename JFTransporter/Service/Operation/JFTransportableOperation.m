@@ -13,8 +13,7 @@ static NSString* const kJFTranportableOpertaionErrorDomain = @"JFTranportableOpe
 
 @interface JFTransportableOperation() <NSURLSessionDataDelegate, NSURLSessionDelegate, NSURLSessionTaskDelegate>
 @property (nonatomic, strong, readwrite) id<JFTransportable> transportable;
-@property (nonatomic, strong, readwrite) NSHTTPURLResponse *response;
-@property (nonatomic, strong, readwrite) NSData *responseData;
+@property (nonatomic, strong, readwrite) JFTransportableResponse* response;
 @property (nonatomic, strong, readwrite) NSError *error;
 @end
 
@@ -23,25 +22,33 @@ static NSString* const kJFTranportableOpertaionErrorDomain = @"JFTranportableOpe
 @synthesize executing = _executing, finished = _finished;
 
 #pragma mark ----------------------
-#pragma mark Instantiation
+#pragma mark Initialization
 #pragma mark ----------------------
+
+- (instancetype)initWithTransportable:(id<JFTransportable>)transportable acceptingStatusCodeInRange:(HTTPStatusCodeRange)statusCodeRange
+{
+    if (self = [super init]) {
+        _transportable = transportable;
+        _executing = NO;
+        _finished = NO;
+        _acceptableStatusCodeRange = statusCodeRange;
+    }
+    return self;
+}
 
 - (instancetype)initWithTransportable:(id<JFTransportable>)transportable
 {
-    if (self = [super init]) {
-        _transportable  = transportable;
-        _executing      = NO;
-        _finished       = NO;
-        _response       = nil;
-        _responseData   = nil;
-        _error          = nil;
-    }
-    return self;
+    return [self initWithTransportable:transportable acceptingStatusCodeInRange:HTTPStatusCodeRangeMake(HTTPStatusCode200, HTTPStatusCode226)];
 }
 
 + (instancetype)operationwithTransportable:(id<JFTransportable>)transportable
 {
     return [[self alloc] initWithTransportable:transportable];
+}
+
++ (instancetype)operationwithTransportable:(id<JFTransportable>)transportable acceptingStatusCodeInRange:(HTTPStatusCodeRange)statusCodeRange
+{
+    return [[self alloc] initWithTransportable:transportable acceptingStatusCodeInRange:statusCodeRange];
 }
 
 #pragma mark ----------------------
@@ -62,7 +69,7 @@ static NSString* const kJFTranportableOpertaionErrorDomain = @"JFTranportableOpe
         } else {
             if (success) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    success(_strongSelf, _strongSelf.responseData);
+                    success(_strongSelf, _strongSelf.response);
                 });
             }
         }
@@ -118,8 +125,8 @@ static NSString* const kJFTranportableOpertaionErrorDomain = @"JFTranportableOpe
         
         NSURLSession* session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:[NSOperationQueue currentQueue]];
         [[session dataTaskWithRequest:urlRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-            self.responseData = data;
-            self.response = (NSHTTPURLResponse*)response;
+            self.response = [JFTransportableResponse responseForURLResponse:(NSHTTPURLResponse*)response withData:data];
+            self.response.acceptableStatusCodeRange = self.acceptableStatusCodeRange;
             dispatch_semaphore_signal(semephore);
         }] resume];
         
@@ -130,7 +137,7 @@ static NSString* const kJFTranportableOpertaionErrorDomain = @"JFTranportableOpe
             return;
         }
         
-        if (!self.responseData) {
+        if (!self.response.data) {
             NSDictionary* userInfo = @{NSLocalizedDescriptionKey:@"Received empty response"};
             self.error = [NSError errorWithDomain:kJFTranportableOpertaionErrorDomain code:NSURLErrorResourceUnavailable userInfo:userInfo];
             [self completeOperation];
@@ -150,7 +157,7 @@ static NSString* const kJFTranportableOpertaionErrorDomain = @"JFTranportableOpe
     }
     
     [self willChangeValueForKey:@"isExecuting"];
-    [NSThread detachNewThreadSelector:@selector(main) toTarget:self withObject:nil];
+    [self main];
     _executing = YES;
     [self didChangeValueForKey:@"isExecuting"];
 }
@@ -187,7 +194,55 @@ static NSString* const kJFTranportableOpertaionErrorDomain = @"JFTranportableOpe
 - (void)URLSession:(NSURLSession *)session didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
  completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential *credential))completionHandler
 {
-    NSLog(@"Here");
+    NSLog(@"Here: %s", __PRETTY_FUNCTION__);
+}
+
+#pragma mark ----------------------
+#pragma mark NSURLSessionDataDelegate
+#pragma mark ----------------------
+
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask
+    didReceiveData:(NSData *)data
+{
+    NSLog(@"Here: %s", __PRETTY_FUNCTION__);
+}
+
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask
+ willCacheResponse:(NSCachedURLResponse *)proposedResponse
+ completionHandler:(void (^)(NSCachedURLResponse *cachedResponse))completionHandler
+{
+    NSLog(@"Here: %s", __PRETTY_FUNCTION__);
+}
+
+#pragma mark ----------------------
+#pragma mark NSURLSessionDataDelegate
+#pragma mark ----------------------
+
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
+didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
+ completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential *credential))completionHandler
+{
+    NSLog(@"Here: %s", __PRETTY_FUNCTION__);
+}
+
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
+ needNewBodyStream:(void (^)(NSInputStream *bodyStream))completionHandler
+{
+    NSLog(@"Here: %s", __PRETTY_FUNCTION__);
+}
+
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
+   didSendBodyData:(int64_t)bytesSent
+    totalBytesSent:(int64_t)totalBytesSent
+totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend
+{
+    NSLog(@"Here: %s", __PRETTY_FUNCTION__);
+}
+
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
+didCompleteWithError:(NSError *)error
+{
+    NSLog(@"Here: %s", __PRETTY_FUNCTION__);
 }
 
 @end
