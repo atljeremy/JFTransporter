@@ -114,10 +114,6 @@ static NSString* const kJFTranportableOpertaionErrorDomain = @"JFTranportableOpe
             return;
         }
         
-//        NSHTTPURLResponse* urlResponse;
-//        NSError* error;
-//        self.responseData = [NSURLConnection sendSynchronousRequest:urlRequest returningResponse:&urlResponse error:&error];
-        
         dispatch_semaphore_t semephore = dispatch_semaphore_create(0);
         
         NSURLSession* session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:[NSOperationQueue currentQueue]];
@@ -140,15 +136,6 @@ static NSString* const kJFTranportableOpertaionErrorDomain = @"JFTranportableOpe
             [self completeOperation];
             return;
         }
-        
-        if (self.isCancelled) {
-            [self completeOperation];
-            return;
-        }
-        
-//        if (urlResponse) {
-//            self.response = urlResponse;
-//        }
         
         [self completeOperation];
     }
