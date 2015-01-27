@@ -49,10 +49,10 @@
 #pragma mark CoreData Support
 #pragma mark ----------------------
 
-- (void)setManagedObjectContext:(NSManagedObjectContext*)context
+- (void)setParentContext:(NSManagedObjectContext*)context
 {
     NSAssert(context && [context isKindOfClass:[NSManagedObjectContext class]], @"Only a valid NSManagedObjectContext can be used with JFTransporter.");
-    [JFDataManager.sharedManager setManagedObjectContext:context];
+    [JFDataManager.sharedManager setParentContext:context];
 }
 
 #pragma mark ----------------------

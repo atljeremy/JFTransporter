@@ -13,7 +13,7 @@
 @interface JFDataManager : NSObject
 
 + (instancetype)sharedManager;
-- (void)setManagedObjectContext:(NSManagedObjectContext*)context;
+- (void)setParentContext:(NSManagedObjectContext*)parentContext;
 
 //- (NSManagedObject<JFTransportable>*)existingObjectWithAttribute:(NSString*)attribute matchingValue:(id)value forEntityName:(NSString*)entityName;
 - (NSManagedObject<JFTransportable>*)existingObjectWithPredicateFormat:(NSString*)predicateFormat forEntityName:(NSString*)entityName;

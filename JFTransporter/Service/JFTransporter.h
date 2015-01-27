@@ -23,9 +23,9 @@ typedef void(^JFTransportableCompletionHandler)(id<JFTransportable> transportabl
 /**
  * CoreDate Support
  *
- * @return Use this to set the NSMangedObjectContext in which NSManagedObject's should be created/updated. JFTransporter will keep a strong reference to the passed context.
+ * @return Use this to set the NSMangedObjectContext in which NSManagedObject's should be created/updated. JFTransporter will used the passed in context to spawn new NSPrivateQueueConcurrencyType contexts that use parentContext as their parent.
  */
-- (void)setManagedObjectContext:(NSManagedObjectContext*)context;
+- (void)setParentContext:(NSManagedObjectContext*)parentContext;
 
 // GET
 - (JFTransportableOperation*)GETTransportable:(id<JFTransportable>)transportable completionHandler:(JFTransportableCompletionHandler)completionHandler;

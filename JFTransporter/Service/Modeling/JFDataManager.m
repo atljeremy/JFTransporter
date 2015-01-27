@@ -11,7 +11,9 @@
 #import "JFSynchronizable.h"
 
 @interface JFDataManager ()
-@property (nonatomic, strong) NSManagedObjectContext* context;
+@property (nonatomic, strong) NSManagedObjectContext* parentContext;
+@property (nonatomic, strong) NSManagedObjectContext* privateContext;
+- (NSManagedObjectContext*)privateContext;
 @end
 
 @implementation JFDataManager
@@ -30,21 +32,29 @@
 #pragma mark NSManagedObjectContext
 #pragma mark ----------------------
 
-- (void)setManagedObjectContext:(NSManagedObjectContext*)context
+- (void)setParentContext:(NSManagedObjectContext *)parentContext
 {
-    self.context = context;
+    NSAssert(parentContext, @"Must provide an NSManagedObjectContext using -setParentContext");
+    _parentContext = parentContext;
+    _privateContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+    _privateContext.parentContext = _parentContext;
+}
+
+- (NSManagedObjectContext*)privateContext
+{
+    NSAssert(_privateContext.parentContext, @"Must provide an NSManagedObjectContext using -setParentContext");
+    return _privateContext;
 }
 
 - (BOOL)saveContextWithError:(NSError**)error_p
 {
-    NSAssert(self.context, @"Must provide an NSManagedObjectContext using -setManagedObjectContext");
     __block BOOL saved = NO;
-    BOOL hasChanges = [self.context hasChanges];
+    BOOL hasChanges = [self.privateContext hasChanges];
     if (hasChanges) {
-        [self.context performBlockAndWait:^{
-            saved = [self.context save:error_p];
+        [self.privateContext performBlockAndWait:^{
+            saved = [self.privateContext save:error_p];
             
-            NSManagedObjectContext* ancestorContext = self.context.parentContext;
+            NSManagedObjectContext* ancestorContext = self.privateContext.parentContext;
             while (ancestorContext) {
                 [ancestorContext performBlockAndWait:^{
                     [ancestorContext save:error_p];
@@ -67,11 +77,10 @@
 
 - (NSManagedObject<JFTransportable>*)existingObjectWithPredicateFormat:(NSString*)predicateFormat forEntityName:(NSString*)entityName
 {
-    NSAssert(self.context, @"Must provide an NSManagedObjectContext using -setManagedObjectContext");
     __block NSManagedObject<JFTransportable>* object;
-    [self.context performBlockAndWait:^{
+    [self.privateContext performBlockAndWait:^{
         NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-        NSEntityDescription *entity = [NSEntityDescription entityForName:entityName inManagedObjectContext:self.context];
+        NSEntityDescription *entity = [NSEntityDescription entityForName:entityName inManagedObjectContext:self.privateContext];
         [fetchRequest setEntity:entity];
 
         NSPredicate *predicate = [NSPredicate predicateWithFormat:predicateFormat];
@@ -80,7 +89,7 @@
         fetchRequest.fetchBatchSize = 1;
         fetchRequest.fetchLimit = 1;
         
-        NSArray *fetchedObjects = [self.context executeFetchRequest:fetchRequest error:nil];
+        NSArray *fetchedObjects = [self.privateContext executeFetchRequest:fetchRequest error:nil];
         if (fetchedObjects.count == 1) {
             object = fetchedObjects.firstObject;
         }
@@ -91,15 +100,13 @@
 
 - (NSManagedObject<JFTransportable>*)insertNewObjectForEntityForName:(NSString*)entityName
 {
-    NSAssert(self.context, @"Must provide an NSManagedObjectContext using -setManagedObjectContext");
-    return [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:self.context];
+    return [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:self.privateContext];
 }
 
 - (void)deleteObject:(NSManagedObject<JFTransportable>*)object
 {
-    NSAssert(self.context, @"Must provide an NSManagedObjectContext using -setManagedObjectContext");
-    [self.context performBlock:^{
-        [self.context deleteObject:object];
+    [self.privateContext performBlock:^{
+        [self.privateContext deleteObject:object];
     }];
 }
 
