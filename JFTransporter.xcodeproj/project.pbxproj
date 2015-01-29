@@ -8,20 +8,22 @@
 
 /* Begin PBXBuildFile section */
 		1A3B5A011A29097F0050545F /* libJFTransporter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A3B59F51A29097F0050545F /* libJFTransporter.a */; };
-		1A3B5A151A290B7F0050545F /* JFTransportableOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A3B5A141A290B7F0050545F /* JFTransportableOperation.m */; };
 		1A3B5A1C1A2910230050545F /* JFTransporter.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A3B5A1A1A2910230050545F /* JFTransporter.m */; };
 		1A3B5A231A2CB9FF0050545F /* JFObjectModelMapping.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A3B5A221A2CB9FF0050545F /* JFObjectModelMapping.m */; };
 		1A3B5A341A2CE18C0050545F /* JFObjectModelMapping.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1A3B5A211A2CB9FF0050545F /* JFObjectModelMapping.h */; };
 		1A3B5A461A2D1DC90050545F /* JFObjectModelMappingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A3B5A451A2D1DC90050545F /* JFObjectModelMappingTests.m */; };
-		3F129C271A2A170D00DBCE27 /* JFTransportableOperation.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1A3B5A131A290B7F0050545F /* JFTransportableOperation.h */; };
 		3F129C281A2A170D00DBCE27 /* JFTransporter.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1A3B5A191A2910230050545F /* JFTransporter.h */; };
 		3F7979F51A601BB0008F5C5B /* JFDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F7979F41A601BB0008F5C5B /* JFDataManager.m */; };
 		3F7979FA1A65B79E008F5C5B /* JFSynchronizable.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3F7979F91A65B746008F5C5B /* JFSynchronizable.h */; };
 		3F7979FF1A65BB53008F5C5B /* JFTransportable.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1A3B5A101A290A1B0050545F /* JFTransportable.h */; };
-		3FC3C9FC1A76908600F71ED4 /* JFTransportableResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FC3C9FB1A76908600F71ED4 /* JFTransportableResponse.m */; };
+		3FC3C9FC1A76908600F71ED4 /* JFURLResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FC3C9FB1A76908600F71ED4 /* JFURLResponse.m */; };
 		3FC3CA001A7690F800F71ED4 /* JFTransporterConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FC3C9FF1A7690F800F71ED4 /* JFTransporterConstants.m */; };
 		3FC3CA011A76E80000F71ED4 /* JFTransporterConstants.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3FC3C9FE1A7690F800F71ED4 /* JFTransporterConstants.h */; };
-		3FC3CA021A76E80600F71ED4 /* JFTransportableResponse.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3FC3C9FA1A76908600F71ED4 /* JFTransportableResponse.h */; };
+		3FC3CA021A76E80600F71ED4 /* JFURLResponse.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3FC3C9FA1A76908600F71ED4 /* JFURLResponse.h */; };
+		3FC3CA321A79839300F71ED4 /* JFRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FC3CA311A79839300F71ED4 /* JFRequestOperation.m */; };
+		3FC3CA361A798AF800F71ED4 /* JFURLRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 3FC3CA351A798AF800F71ED4 /* JFURLRequest.m */; };
+		3FC3CA3A1A7995E000F71ED4 /* JFRequestOperation.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3FC3CA301A79839300F71ED4 /* JFRequestOperation.h */; };
+		3FC3CA3B1A7995EE00F71ED4 /* JFURLRequest.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3FC3CA341A798AF800F71ED4 /* JFURLRequest.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -41,12 +43,13 @@
 			dstPath = "include/$(PRODUCT_NAME)";
 			dstSubfolderSpec = 16;
 			files = (
-				3FC3CA021A76E80600F71ED4 /* JFTransportableResponse.h in CopyFiles */,
+				3FC3CA3B1A7995EE00F71ED4 /* JFURLRequest.h in CopyFiles */,
+				3FC3CA3A1A7995E000F71ED4 /* JFRequestOperation.h in CopyFiles */,
+				3FC3CA021A76E80600F71ED4 /* JFURLResponse.h in CopyFiles */,
 				3FC3CA011A76E80000F71ED4 /* JFTransporterConstants.h in CopyFiles */,
 				3F7979FF1A65BB53008F5C5B /* JFTransportable.h in CopyFiles */,
 				3F7979FA1A65B79E008F5C5B /* JFSynchronizable.h in CopyFiles */,
 				1A3B5A341A2CE18C0050545F /* JFObjectModelMapping.h in CopyFiles */,
-				3F129C271A2A170D00DBCE27 /* JFTransportableOperation.h in CopyFiles */,
 				3F129C281A2A170D00DBCE27 /* JFTransporter.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -58,8 +61,6 @@
 		1A3B5A001A29097F0050545F /* JFTransporterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = JFTransporterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A3B5A061A29097F0050545F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1A3B5A101A290A1B0050545F /* JFTransportable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JFTransportable.h; sourceTree = "<group>"; };
-		1A3B5A131A290B7F0050545F /* JFTransportableOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JFTransportableOperation.h; sourceTree = "<group>"; };
-		1A3B5A141A290B7F0050545F /* JFTransportableOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JFTransportableOperation.m; sourceTree = "<group>"; };
 		1A3B5A191A2910230050545F /* JFTransporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JFTransporter.h; sourceTree = "<group>"; };
 		1A3B5A1A1A2910230050545F /* JFTransporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JFTransporter.m; sourceTree = "<group>"; };
 		1A3B5A211A2CB9FF0050545F /* JFObjectModelMapping.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JFObjectModelMapping.h; sourceTree = "<group>"; };
@@ -68,10 +69,14 @@
 		3F7979F31A601BB0008F5C5B /* JFDataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JFDataManager.h; sourceTree = "<group>"; };
 		3F7979F41A601BB0008F5C5B /* JFDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JFDataManager.m; sourceTree = "<group>"; };
 		3F7979F91A65B746008F5C5B /* JFSynchronizable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JFSynchronizable.h; sourceTree = "<group>"; };
-		3FC3C9FA1A76908600F71ED4 /* JFTransportableResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JFTransportableResponse.h; sourceTree = "<group>"; };
-		3FC3C9FB1A76908600F71ED4 /* JFTransportableResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JFTransportableResponse.m; sourceTree = "<group>"; };
+		3FC3C9FA1A76908600F71ED4 /* JFURLResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JFURLResponse.h; sourceTree = "<group>"; };
+		3FC3C9FB1A76908600F71ED4 /* JFURLResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JFURLResponse.m; sourceTree = "<group>"; };
 		3FC3C9FE1A7690F800F71ED4 /* JFTransporterConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JFTransporterConstants.h; sourceTree = "<group>"; };
 		3FC3C9FF1A7690F800F71ED4 /* JFTransporterConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JFTransporterConstants.m; sourceTree = "<group>"; };
+		3FC3CA301A79839300F71ED4 /* JFRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JFRequestOperation.h; sourceTree = "<group>"; };
+		3FC3CA311A79839300F71ED4 /* JFRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JFRequestOperation.m; sourceTree = "<group>"; };
+		3FC3CA341A798AF800F71ED4 /* JFURLRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JFURLRequest.h; sourceTree = "<group>"; };
+		3FC3CA351A798AF800F71ED4 /* JFURLRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JFURLRequest.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -153,6 +158,7 @@
 				3F7979F21A601AB9008F5C5B /* Modeling */,
 				1A3B5A201A2CB9C20050545F /* Mapping */,
 				1A3B5A121A290B430050545F /* Operation */,
+				3FC3CA331A798AC500F71ED4 /* Request */,
 				3FC3C9F91A76906700F71ED4 /* Response */,
 				1A3B5A191A2910230050545F /* JFTransporter.h */,
 				1A3B5A1A1A2910230050545F /* JFTransporter.m */,
@@ -163,8 +169,8 @@
 		1A3B5A121A290B430050545F /* Operation */ = {
 			isa = PBXGroup;
 			children = (
-				1A3B5A131A290B7F0050545F /* JFTransportableOperation.h */,
-				1A3B5A141A290B7F0050545F /* JFTransportableOperation.m */,
+				3FC3CA301A79839300F71ED4 /* JFRequestOperation.h */,
+				3FC3CA311A79839300F71ED4 /* JFRequestOperation.m */,
 			);
 			path = Operation;
 			sourceTree = "<group>";
@@ -190,8 +196,8 @@
 		3FC3C9F91A76906700F71ED4 /* Response */ = {
 			isa = PBXGroup;
 			children = (
-				3FC3C9FA1A76908600F71ED4 /* JFTransportableResponse.h */,
-				3FC3C9FB1A76908600F71ED4 /* JFTransportableResponse.m */,
+				3FC3C9FA1A76908600F71ED4 /* JFURLResponse.h */,
+				3FC3C9FB1A76908600F71ED4 /* JFURLResponse.m */,
 			);
 			path = Response;
 			sourceTree = "<group>";
@@ -203,6 +209,15 @@
 				3FC3C9FF1A7690F800F71ED4 /* JFTransporterConstants.m */,
 			);
 			path = Constants;
+			sourceTree = "<group>";
+		};
+		3FC3CA331A798AC500F71ED4 /* Request */ = {
+			isa = PBXGroup;
+			children = (
+				3FC3CA341A798AF800F71ED4 /* JFURLRequest.h */,
+				3FC3CA351A798AF800F71ED4 /* JFURLRequest.m */,
+			);
+			path = Request;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -294,9 +309,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				1A3B5A1C1A2910230050545F /* JFTransporter.m in Sources */,
-				3FC3C9FC1A76908600F71ED4 /* JFTransportableResponse.m in Sources */,
+				3FC3C9FC1A76908600F71ED4 /* JFURLResponse.m in Sources */,
+				3FC3CA361A798AF800F71ED4 /* JFURLRequest.m in Sources */,
 				1A3B5A231A2CB9FF0050545F /* JFObjectModelMapping.m in Sources */,
-				1A3B5A151A290B7F0050545F /* JFTransportableOperation.m in Sources */,
+				3FC3CA321A79839300F71ED4 /* JFRequestOperation.m in Sources */,
 				3FC3CA001A7690F800F71ED4 /* JFTransporterConstants.m in Sources */,
 				3F7979F51A601BB0008F5C5B /* JFDataManager.m in Sources */,
 			);

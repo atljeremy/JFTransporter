@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "JFObjectModelMapping.h"
-#import "JFTransportableResponse.h"
+#import "JFURLResponse.h"
 
 @protocol JFTransportable <NSObject>
 
@@ -128,17 +128,5 @@
  * @return An NSDictionary that tells JFTransporter how to map the response to your model object.
  */
 - (NSDictionary*)responseToObjectModelMapping;
-
-#pragma mark ----------------------
-#pragma mark Properties - Internal Use Only
-#pragma mark ----------------------
-
-/**
- * These properties are for internal use only. If you set any of these propeties yourself the value will be overriden interanally when ever you transport a request.
- */
-@property (nonatomic, strong) NSURL* URL;
-@property (nonatomic, strong) NSString* HTTPMethod;
-@property (nonatomic, strong) NSData* HTTPBody;
-@property (nonatomic, strong) NSDictionary* HTTPHeaderFields;
 
 @end

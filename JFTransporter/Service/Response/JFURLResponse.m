@@ -6,29 +6,24 @@
 //  Copyright (c) 2015 Jeremy Fox. All rights reserved.
 //
 
-#import "JFTransportableResponse.h"
+#import "JFURLResponse.h"
 #import "JFTransporterConstants.h"
 
-@implementation JFTransportableResponse
+@implementation JFURLResponse
 
-- (instancetype)initWithURLResponse:(NSHTTPURLResponse*)response withData:(NSData*)data
+- (instancetype)initWithHTTPURLResponse:(NSHTTPURLResponse*)HTTPURLResponse
 {
-    if (self = [super init]) {
-        _data = data;
-        _HTTPResponse = response;
-    }
-    
-    return self;
+    return [super initWithURL:HTTPURLResponse.URL statusCode:HTTPURLResponse.statusCode HTTPVersion:@"HTTP/1.1" headerFields:HTTPURLResponse.allHeaderFields];
 }
 
-+ (instancetype)responseForURLResponse:(NSHTTPURLResponse *)response withData:(NSData *)data
++ (instancetype)responseFromHTTPURLResponse:(NSHTTPURLResponse*)HTTPURLResponse
 {
-    return [[self alloc] initWithURLResponse:response withData:data];
+    return [[self alloc] initWithHTTPURLResponse:HTTPURLResponse];
 }
 
 - (NSString*)description
 {
-    NSString* description = [NSString stringWithFormat:@" HTTPResonse: %@ \n data.length: %li \n acceptableStatusCodeRange: %li - %li", self.HTTPResponse, self.data.length, self.acceptableStatusCodeRange.beginningCode, self.acceptableStatusCodeRange.endingCode];
+    NSString* description = [NSString stringWithFormat:@" HTTPResonse: %@ \n data.length: %li \n acceptableStatusCodeRange: %li - %li", self, self.data.length, self.acceptableStatusCodeRange.beginningCode, self.acceptableStatusCodeRange.endingCode];
     return description;
 }
 
@@ -56,7 +51,7 @@
     NSAssert(beginningStatusCode >= 100 && beginningStatusCode < 600, message);
     NSAssert(endingStatusCode >= 100 && endingStatusCode < 600, message);
     
-    return HTTPStatusCodeWithinRange(self.HTTPResponse.statusCode, self.acceptableStatusCodeRange);
+    return HTTPStatusCodeWithinRange(self.statusCode, self.acceptableStatusCodeRange);
 }
 
 @end

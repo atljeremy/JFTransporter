@@ -7,17 +7,17 @@
 //
 
 #import "JFTransporter.h"
-#import "JFTransportableOperation.h"
+#import "JFRequestOperation.h"
 #import "JFTransportable.h"
 #import "JFObjectModelMapping.h"
 #import "JFDataManager.h"
+#import "JFURLRequest.h"
+#import "JFURLProtocol.h"
 #import <objc/runtime.h>
-
-#define JFTransporterAssert(_TRANSPORTER) NSAssert([_TRANSPORTER conformsToProtocol:@protocol(JFTransportable)], @"Invliad transportable - must conform to JFTransportable protocol.")
 
 @interface JFTransporter ()
 @property (nonatomic, strong) NSOperationQueue* queue;
-- (JFTransportableOperation*)transport:(id<JFTransportable>)transportable completionHandler:(JFTransportableCompletionHandler)completionHandler;
+- (JFRequestOperation*)enqueueOperation:(JFRequestOperation*)operation completionHandler:(JFTransportableCompletionHandler)completionHandler;
 @end
 
 @implementation JFTransporter
@@ -60,105 +60,57 @@
 #pragma mark ----------------------
 
 // GET
-- (JFTransportableOperation*)GETTransportable:(id<JFTransportable>)transportable completionHandler:(JFTransportableCompletionHandler)completionHandler
+- (JFRequestOperation*)GETTransportable:(id<JFTransportable>)transportable completionHandler:(JFTransportableCompletionHandler)completionHandler
 {
-    transportable.URL = [transportable GETURL];
-    transportable.HTTPMethod = @"GET";
-    if ([transportable respondsToSelector:@selector(GETHTTPBody)]) {
-        transportable.HTTPBody = [transportable GETHTTPBody];
-    }
-    if ([transportable respondsToSelector:@selector(GETHTTPHeaderFields)]) {
-        transportable.HTTPHeaderFields = [transportable GETHTTPHeaderFields];
-    }
-    return [self transport:transportable completionHandler:completionHandler];
+    JFURLRequest* request = [JFURLRequest GETTransportable:transportable];
+    return [self enqueueOperation:[JFRequestOperation operationWithRequest:request] completionHandler:completionHandler];
 }
 
 // POST
-- (JFTransportableOperation*)POSTTransportable:(id<JFTransportable>)transportable completionHandler:(JFTransportableCompletionHandler)completionHandler
+- (JFRequestOperation*)POSTTransportable:(id<JFTransportable>)transportable completionHandler:(JFTransportableCompletionHandler)completionHandler
 {
-    transportable.URL = transportable.POSTURL;
-    transportable.HTTPMethod = @"POST";
-    if ([transportable respondsToSelector:@selector(POSTHTTPBody)]) {
-        transportable.HTTPBody = transportable.POSTHTTPBody;
-    }
-    if ([transportable respondsToSelector:@selector(POSTHTTPHeaderFields)]) {
-        transportable.HTTPHeaderFields = transportable.POSTHTTPHeaderFields;
-    }
-    
-    return [self transport:transportable completionHandler:completionHandler];
+    JFURLRequest* request = [JFURLRequest POSTTransportable:transportable];
+    return [self enqueueOperation:[JFRequestOperation operationWithRequest:request] completionHandler:completionHandler];
 }
 
 // PUT
-- (JFTransportableOperation*)PUTTransportable:(id<JFTransportable>)transportable completionHandler:(JFTransportableCompletionHandler)completionHandler
+- (JFRequestOperation*)PUTTransportable:(id<JFTransportable>)transportable completionHandler:(JFTransportableCompletionHandler)completionHandler
 {
-    transportable.URL = transportable.PUTURL;
-    transportable.HTTPMethod = @"PUT";
-    if ([transportable respondsToSelector:@selector(PUTHTTPBody)]) {
-        transportable.HTTPBody = transportable.PUTHTTPBody;
-    }
-    if ([transportable respondsToSelector:@selector(PUTHTTPHeaderFields)]) {
-        transportable.HTTPHeaderFields = transportable.PUTHTTPHeaderFields;
-    }
-    
-    return [self transport:transportable completionHandler:completionHandler];
+    JFURLRequest* request = [JFURLRequest PUTTransportable:transportable];
+    return [self enqueueOperation:[JFRequestOperation operationWithRequest:request] completionHandler:completionHandler];
 }
 
 // PATCH
-- (JFTransportableOperation*)PATCHTransportable:(id<JFTransportable>)transportable completionHandler:(JFTransportableCompletionHandler)completionHandler
+- (JFRequestOperation*)PATCHTransportable:(id<JFTransportable>)transportable completionHandler:(JFTransportableCompletionHandler)completionHandler
 {
-    transportable.URL = transportable.PATCHURL;
-    transportable.HTTPMethod = @"PATCH";
-    if ([transportable respondsToSelector:@selector(PATCHHTTPBody)]) {
-        transportable.HTTPBody = transportable.PATCHHTTPBody;
-    }
-    if ([transportable respondsToSelector:@selector(PATCHHTTPBody)]) {
-        transportable.HTTPHeaderFields = transportable.PATCHHTTPHeaderFields;
-    }
-    
-    return [self transport:transportable completionHandler:completionHandler];
+    JFURLRequest* request = [JFURLRequest PATCHTransportable:transportable];
+    return [self enqueueOperation:[JFRequestOperation operationWithRequest:request] completionHandler:completionHandler];
 }
 
 // DELETE
-- (JFTransportableOperation*)DELETETransportable:(id<JFTransportable>)transportable completionHandler:(JFTransportableCompletionHandler)completionHandler
+- (JFRequestOperation*)DELETETransportable:(id<JFTransportable>)transportable completionHandler:(JFTransportableCompletionHandler)completionHandler
 {
-    transportable.URL = transportable.DELETEURL;
-    transportable.HTTPMethod = @"DELETE";
-    if ([transportable respondsToSelector:@selector(DELETEHTTPBody)]) {
-        transportable.HTTPBody = transportable.DELETEHTTPBody;
-    }
-    if ([transportable respondsToSelector:@selector(DELETEHTTPHeaderFields)]) {
-        transportable.HTTPHeaderFields = transportable.DELETEHTTPHeaderFields;
-    }
-    
-    return [self transport:transportable completionHandler:completionHandler];
+    JFURLRequest* request = [JFURLRequest DELETETransportable:transportable];
+    return [self enqueueOperation:[JFRequestOperation operationWithRequest:request] completionHandler:completionHandler];
 }
 
-- (JFTransportableOperation*)transport:(id<JFTransportable>)transportable completionHandler:(JFTransportableCompletionHandler)completionHandler
+- (JFRequestOperation*)enqueueOperation:(JFRequestOperation*)operation completionHandler:(JFTransportableCompletionHandler)completionHandler
 {
-    JFTransporterAssert(transportable);
+    NSParameterAssert(operation);
     NSParameterAssert(completionHandler);
-    
-    HTTPStatusCodeRange acceptableStatusCodeRange;
-    if ([transportable respondsToSelector:@selector(acceptableStatusCodeRange)]) {
-        acceptableStatusCodeRange = transportable.acceptableStatusCodeRange;
-    } else {
-        acceptableStatusCodeRange = HTTPStatusCodeRangeMake(HTTPStatusCode200, HTTPStatusCode226);
-    }
-    
-    JFTransportableOperation* operation = [JFTransportableOperation operationwithTransportable:transportable acceptingStatusCodeInRange:acceptableStatusCodeRange];
-    [operation setCompletionBlockWithSuccess:^(JFTransportableOperation *operation, JFTransportableResponse* response) {
+    [operation setCompletionBlockWithSuccess:^(JFRequestOperation *operation, JFURLResponse* response) {
         NSError* error;
         id<JFTransportable> _transportable;
         if ([response hasAcceptableStatusCode]) {
-            _transportable = operation.transportable;
+            _transportable = operation.request.transportable;
             [JFObjectModelMapping mapResponseObject:response.JSONObject toTransportable:&_transportable];
         } else {
-            NSString* description = [NSString stringWithFormat:@"Response status code is not within the acceptable range. Status code was %li", response.HTTPResponse.statusCode];
+            NSString* description = [NSString stringWithFormat:@"Response status code is not within the acceptable range. Status code was %li", response.statusCode];
             error = [NSError errorWithDomain:NSRangeException code:9867 userInfo:@{NSLocalizedDescriptionKey: description}];
         }
         completionHandler(_transportable, error);
-    } failure:^(JFTransportableOperation *operation, NSError* error) {
-        completionHandler(operation.transportable, error);
+    } failure:^(JFRequestOperation *operation, NSError* error) {
+        completionHandler(operation.request.transportable, error);
     }];
     
     [self.queue addOperation:operation];
@@ -170,21 +122,9 @@
 #pragma mark Cancelation
 #pragma mark ----------------------
 
-- (BOOL)cancel:(id<JFTransportable>)transportable
+- (void)cancel:(JFRequestOperation*)requestOperation
 {
-    JFTransporterAssert(transportable);
-    
-    BOOL cancelled = NO;
-    for (NSOperation* _operation in self.queue.operations) {
-        if ([_operation isKindOfClass:[JFTransportableOperation class]] && !_operation.isCancelled) {
-            JFTransportableOperation* transportableOperation = (JFTransportableOperation*)_operation;
-            if ([transportableOperation.transportable isEqual:transportable]) {
-                [transportableOperation cancel];
-            }
-        }
-    }
-    
-    return cancelled;
+    [requestOperation cancel];
 }
 
 @end

@@ -8,7 +8,7 @@
 
 @import Foundation;
 @import CoreData;
-#import "JFTransportableOperation.h"
+#import "JFRequestOperation.h"
 @protocol JFTransportable;
 
 typedef void(^JFTransportableCompletionHandler)(id<JFTransportable> transportable, NSError* error);
@@ -28,20 +28,20 @@ typedef void(^JFTransportableCompletionHandler)(id<JFTransportable> transportabl
 - (void)setParentContext:(NSManagedObjectContext*)parentContext;
 
 // GET
-- (JFTransportableOperation*)GETTransportable:(id<JFTransportable>)transportable completionHandler:(JFTransportableCompletionHandler)completionHandler;
+- (JFRequestOperation*)GETTransportable:(id<JFTransportable>)transportable completionHandler:(JFTransportableCompletionHandler)completionHandler;
 
 // POST
-- (JFTransportableOperation*)POSTTransportable:(id<JFTransportable>)transportable completionHandler:(JFTransportableCompletionHandler)completionHandler;
+- (JFRequestOperation*)POSTTransportable:(id<JFTransportable>)transportable completionHandler:(JFTransportableCompletionHandler)completionHandler;
 
 // PUT
-- (JFTransportableOperation*)PUTTransportable:(id<JFTransportable>)transportable completionHandler:(JFTransportableCompletionHandler)completionHandler;
+- (JFRequestOperation*)PUTTransportable:(id<JFTransportable>)transportable completionHandler:(JFTransportableCompletionHandler)completionHandler;
 
 // PATCH
-- (JFTransportableOperation*)PATCHTransportable:(id<JFTransportable>)transportable completionHandler:(JFTransportableCompletionHandler)completionHandler;
+- (JFRequestOperation*)PATCHTransportable:(id<JFTransportable>)transportable completionHandler:(JFTransportableCompletionHandler)completionHandler;
 
 // DELETE
-- (JFTransportableOperation*)DELETETransportable:(id<JFTransportable>)transportable completionHandler:(JFTransportableCompletionHandler)completionHandler;
+- (JFRequestOperation*)DELETETransportable:(id<JFTransportable>)transportable completionHandler:(JFTransportableCompletionHandler)completionHandler;
 
-- (BOOL)cancel:(id<JFTransportable>)transportable;
+- (void)cancel:(JFRequestOperation*)requestOperation;
 
 @end

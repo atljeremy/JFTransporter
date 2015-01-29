@@ -1,23 +1,23 @@
 //
-//  JFTransportableOperation.m
+//  JFRequestOperation.m
 //  JFTransporter
 //
-//  Created by Jeremy Fox on 11/28/14.
-//  Copyright (c) 2014 Jeremy Fox. All rights reserved.
+//  Created by Jeremy Fox on 1/28/15.
+//  Copyright (c) 2015 Jeremy Fox. All rights reserved.
 //
 
-#import "JFTransportableOperation.h"
+#import "JFRequestOperation.h"
 #import "JFTransportable.h"
 
-static NSString* const kJFTranportableOpertaionErrorDomain = @"JFTranportableOpertaionErrorDomain";
+static NSString* const kJFRequestOpertaionErrorDomain = @"JFRequestOpertaionErrorDomain";
 
-@interface JFTransportableOperation() <NSURLSessionDataDelegate, NSURLSessionDelegate, NSURLSessionTaskDelegate>
-@property (nonatomic, strong, readwrite) id<JFTransportable> transportable;
-@property (nonatomic, strong, readwrite) JFTransportableResponse* response;
+@interface JFRequestOperation() <NSURLSessionDataDelegate, NSURLSessionDelegate, NSURLSessionTaskDelegate>
+@property (nonatomic, strong, readwrite) JFURLRequest* request;
+@property (nonatomic, strong, readwrite) JFURLResponse* response;
 @property (nonatomic, strong, readwrite) NSError *error;
 @end
 
-@implementation JFTransportableOperation
+@implementation JFRequestOperation
 
 @synthesize executing = _executing, finished = _finished;
 
@@ -25,30 +25,19 @@ static NSString* const kJFTranportableOpertaionErrorDomain = @"JFTranportableOpe
 #pragma mark Initialization
 #pragma mark ----------------------
 
-- (instancetype)initWithTransportable:(id<JFTransportable>)transportable acceptingStatusCodeInRange:(HTTPStatusCodeRange)statusCodeRange
+- (instancetype)initWithRequest:(JFURLRequest*)request
 {
     if (self = [super init]) {
-        _transportable = transportable;
+        _request = request;
         _executing = NO;
         _finished = NO;
-        _acceptableStatusCodeRange = statusCodeRange;
     }
     return self;
 }
 
-- (instancetype)initWithTransportable:(id<JFTransportable>)transportable
++ (instancetype)operationWithRequest:(JFURLRequest*)request
 {
-    return [self initWithTransportable:transportable acceptingStatusCodeInRange:HTTPStatusCodeRangeMake(HTTPStatusCode200, HTTPStatusCode226)];
-}
-
-+ (instancetype)operationwithTransportable:(id<JFTransportable>)transportable
-{
-    return [[self alloc] initWithTransportable:transportable];
-}
-
-+ (instancetype)operationwithTransportable:(id<JFTransportable>)transportable acceptingStatusCodeInRange:(HTTPStatusCodeRange)statusCodeRange
-{
-    return [[self alloc] initWithTransportable:transportable acceptingStatusCodeInRange:statusCodeRange];
+    return [[self alloc] initWithRequest:request];
 }
 
 #pragma mark ----------------------
@@ -88,45 +77,13 @@ static NSString* const kJFTranportableOpertaionErrorDomain = @"JFTranportableOpe
             return;
         }
         
-        if (![self.transportable conformsToProtocol:@protocol(JFTransportable)]) {
-            [self completeOperation];
-            return;
-        }
-        
-        NSURL* url = self.transportable.URL;
-        NSMutableURLRequest* urlRequest = [NSMutableURLRequest requestWithURL:url];
-        urlRequest.HTTPMethod = self.transportable.HTTPMethod;
-        
-        if ([self.transportable respondsToSelector:@selector(HTTPBody)] && self.transportable.HTTPBody) {
-            urlRequest.HTTPBody = self.transportable.HTTPBody;
-            NSString* params = [NSString stringWithCString:self.transportable.HTTPBody.bytes encoding:NSUTF8StringEncoding];
-            NSLog(@"HTTPBody: %@", params);
-        }
-        
-        if (self.isCancelled) {
-            [self completeOperation];
-            return;
-        }
-        
-        if ([self.transportable respondsToSelector:@selector(HTTPHeaderFields)]) {
-            [self.transportable.HTTPHeaderFields enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-                if ([obj isKindOfClass:[NSString class]] && [key isKindOfClass:[NSString class]]) {
-                    [urlRequest setValue:obj forHTTPHeaderField:key];
-                }
-            }];
-        }
-        
-        if (self.isCancelled) {
-            [self completeOperation];
-            return;
-        }
-        
         dispatch_semaphore_t semephore = dispatch_semaphore_create(0);
         
         NSURLSession* session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:[NSOperationQueue currentQueue]];
-        [[session dataTaskWithRequest:urlRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-            self.response = [JFTransportableResponse responseForURLResponse:(NSHTTPURLResponse*)response withData:data];
-            self.response.acceptableStatusCodeRange = self.acceptableStatusCodeRange;
+        [[session dataTaskWithRequest:self.request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+            self.response = [JFURLResponse responseFromHTTPURLResponse:(NSHTTPURLResponse*)response];
+            self.response.data = data;
+            self.response.acceptableStatusCodeRange = self.request.acceptableStatusCodeRange;
             dispatch_semaphore_signal(semephore);
         }] resume];
         
@@ -139,7 +96,7 @@ static NSString* const kJFTranportableOpertaionErrorDomain = @"JFTranportableOpe
         
         if (!self.response.data) {
             NSDictionary* userInfo = @{NSLocalizedDescriptionKey:@"Received empty response"};
-            self.error = [NSError errorWithDomain:kJFTranportableOpertaionErrorDomain code:NSURLErrorResourceUnavailable userInfo:userInfo];
+            self.error = [NSError errorWithDomain:kJFRequestOpertaionErrorDomain code:NSURLErrorResourceUnavailable userInfo:userInfo];
             [self completeOperation];
             return;
         }
@@ -182,7 +139,7 @@ static NSString* const kJFTranportableOpertaionErrorDomain = @"JFTranportableOpe
         error = _error;
     } else if (!self.response) {
         NSDictionary* userInfo = @{NSLocalizedDescriptionKey:@"Request failed"};
-        error = [NSError errorWithDomain:kJFTranportableOpertaionErrorDomain code:NSURLErrorResourceUnavailable userInfo:userInfo];
+        error = [NSError errorWithDomain:kJFRequestOpertaionErrorDomain code:NSURLErrorResourceUnavailable userInfo:userInfo];
     }
     return error;
 }

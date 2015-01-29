@@ -16,6 +16,8 @@
 #endif
 #endif
 
+#define JFTransporterAssert(_TRANSPORTER) NSAssert([_TRANSPORTER conformsToProtocol:@protocol(JFTransportable)], @"Invliad transportable - must conform to JFTransportable protocol.")
+
 typedef NS_ENUM(NSUInteger, HTTPStatusCode) {
     HTTPStatusCode100 = 100, // 'Continue',
     HTTPStatusCode101 = 101, // 'Switching Protocols',
@@ -80,6 +82,22 @@ typedef NS_ENUM(NSUInteger, HTTPStatusCode) {
     HTTPStatusCode510 = 510, // 'Not Extended',
     HTTPStatusCode511 = 511  // 'Network Authentication Required'
 };
+
+typedef struct _HTTPStatusCodeRange {
+    NSUInteger beginningCode;
+    NSUInteger endingCode;
+} HTTPStatusCodeRange;
+
+NS_INLINE HTTPStatusCodeRange HTTPStatusCodeRangeMake(HTTPStatusCode beginningCode, HTTPStatusCode endingCode) {
+    HTTPStatusCodeRange range;
+    range.beginningCode = beginningCode;
+    range.endingCode = endingCode;
+    return range;
+}
+
+NS_INLINE BOOL HTTPStatusCodeWithinRange(HTTPStatusCode statusCode, HTTPStatusCodeRange range) {
+    return ((statusCode >= range.beginningCode) && (range.endingCode >= statusCode));
+}
 
 @interface JFTransporterConstants : NSObject
 
