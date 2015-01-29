@@ -11,7 +11,7 @@
 #import "JFTransportable.h"
 
 @interface JFURLRequest ()
-@property (nonatomic, weak, readwrite) id<JFTransportable> transportable;
+@property (nonatomic, strong, readwrite) id<JFTransportable> transportable;
 @end
 
 @implementation JFURLRequest

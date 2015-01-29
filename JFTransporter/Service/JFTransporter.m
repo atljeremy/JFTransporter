@@ -12,7 +12,6 @@
 #import "JFObjectModelMapping.h"
 #import "JFDataManager.h"
 #import "JFURLRequest.h"
-#import "JFURLProtocol.h"
 #import <objc/runtime.h>
 
 @interface JFTransporter ()
