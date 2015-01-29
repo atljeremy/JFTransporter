@@ -16,10 +16,6 @@
 @property (nonatomic, strong) NSNumber* temperatureMax;
 @property (nonatomic, strong) NSNumber* temperatureMin;
 
-@property (nonatomic, strong) NSURL* URL;
-@property (nonatomic, strong) NSString* HTTPMethod;
-@property (nonatomic, strong) NSData* HTTPBody;
-@property (nonatomic, strong) NSDictionary* HTTPHeaderFields;
 @end
 
 @implementation Day
@@ -37,11 +33,6 @@
 @interface Daily : NSObject <JFTransportable>
 
 @property (nonatomic, strong) NSArray/*<Day>*/* days;
-
-@property (nonatomic, strong) NSURL* URL;
-@property (nonatomic, strong) NSString* HTTPMethod;
-@property (nonatomic, strong) NSData* HTTPBody;
-@property (nonatomic, strong) NSDictionary* HTTPHeaderFields;
 
 @end
 
@@ -80,10 +71,6 @@
 
 @property (nonatomic, strong) NSArray* array;
 
-@property (nonatomic, strong) NSURL* URL;
-@property (nonatomic, strong) NSString* HTTPMethod;
-@property (nonatomic, strong) NSData* HTTPBody;
-@property (nonatomic, strong) NSDictionary* HTTPHeaderFields;
 @end
 
 @implementation TestNestedTransportable
@@ -101,10 +88,6 @@
 
 @property (nonatomic, strong) NSArray* array;
 
-@property (nonatomic, strong) NSURL* URL;
-@property (nonatomic, strong) NSString* HTTPMethod;
-@property (nonatomic, strong) NSData* HTTPBody;
-@property (nonatomic, strong) NSDictionary* HTTPHeaderFields;
 @end
 
 @implementation TestNestedTransportableTwo
@@ -123,10 +106,6 @@
 @property (nonatomic, strong) Current* current;
 @property (nonatomic, strong) Daily* daily;
 
-@property (nonatomic, strong) NSURL* URL;
-@property (nonatomic, strong) NSString* HTTPMethod;
-@property (nonatomic, strong) NSData* HTTPBody;
-@property (nonatomic, strong) NSDictionary* HTTPHeaderFields;
 @end
 
 @implementation TestTransportable

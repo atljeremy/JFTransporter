@@ -125,7 +125,7 @@ id JFObjectModelMappingManagedObjectCollection(NSString* __ENTITY_NAME__, Class 
         NSString* entityName = _values[kJFObjectModelMappingEntityKey];
         Class klass = _values[kJFObjectModelMappingObjectKey];
         NSAssert([self isValidClass:klass], @"Classes added to the object mapping dictionary returned by -responseToObjectModelMapping must conform to the JFTransportable protocol.");
-        if (entityName) {
+        if (entityName.length > 0) {
             NSManagedObject<JFTransportable>* managedObject;
             
             BOOL performSync = NO;
@@ -223,19 +223,15 @@ id JFObjectModelMappingManagedObjectCollection(NSString* __ENTITY_NAME__, Class 
 + (void)mapResponseObject:(id)responseObject toTransportable:(NSObject *)_transportable withValuesArray:(NSArray *)values
 {
     NSArray* _values = values;
-    NSString* entityName;
-    id collection;
-    if (_values.count == JFObjectModelMappingArrayIndexCount) {
-        entityName = _values[JFObjectModelMappingArrayIndexEntity];
-        collection = _values[JFObjectModelMappingArrayIndexCollection];
-    }
+    NSString* entityName = _values[JFObjectModelMappingArrayIndexEntity];
+    id collection = _values[JFObjectModelMappingArrayIndexCollection];
     NSString* property = _values[JFObjectModelMappingArrayIndexProperty];
     
     Class klass = _values[JFObjectModelMappingArrayIndexObject];
     NSAssert([self isValidClass:klass], @"Classes added to the object mapping dictionary returned by -responseToObjectModelMapping must conform to the JFTransportable protocol.");
     
     id transportableCollection = [[collection new] mutableCopy];
-    if (entityName) {
+    if (entityName.length > 0) {
         
         BOOL performSync = NO;
         NSString* syncDateAttribute;
