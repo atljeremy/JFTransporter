@@ -158,7 +158,12 @@ id JFObjectModelMappingManagedObjectCollection(NSString* __ENTITY_NAME__, Class 
             }
             
             if (!managedObject) {
-                managedObject = [JFDataManager.sharedManager insertNewObjectForEntityForName:entityName];
+                if ([_transportable isKindOfClass:[NSManagedObject class]]) {
+                    NSManagedObjectContext* context = ((NSManagedObject*)_transportable).managedObjectContext;
+                    managedObject = [JFDataManager.sharedManager insertNewObjectForEntityForName:entityName inMOC:context];
+                } else {
+                    managedObject = [JFDataManager.sharedManager insertNewObjectForEntityForName:entityName];
+                }
             }
             
             NSDate* remoteUpdateAtDate = [self dateFromString:responseObject[responseDateKey] withFormat:responseDateFormat];

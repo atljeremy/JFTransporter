@@ -98,9 +98,17 @@
     return object;
 }
 
+- (NSManagedObject<JFTransportable>*)insertNewObjectForEntityForName:(NSString*)entityName inMOC:(NSManagedObjectContext*)moc
+{
+    if (!moc) {
+        moc = self.privateContext;
+    }
+    return [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:moc];
+}
+
 - (NSManagedObject<JFTransportable>*)insertNewObjectForEntityForName:(NSString*)entityName
 {
-    return [NSEntityDescription insertNewObjectForEntityForName:entityName inManagedObjectContext:self.privateContext];
+    return [self insertNewObjectForEntityForName:entityName inMOC:self.privateContext];
 }
 
 - (void)deleteObject:(NSManagedObject<JFTransportable>*)object
