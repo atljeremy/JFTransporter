@@ -23,7 +23,7 @@
 
 - (NSString*)description
 {
-    NSString* description = [NSString stringWithFormat:@" HTTPResonse: %@ \n data.length: %li \n acceptableStatusCodeRange: %li - %li", self, self.data.length, self.acceptableStatusCodeRange.beginningCode, self.acceptableStatusCodeRange.endingCode];
+    NSString* description = [NSString stringWithFormat:@" HTTPResonse: %@ \n data.length: %li \n acceptableStatusCodeRange: %li - %li", self, (unsigned long)self.data.length, (unsigned long)self.acceptableStatusCodeRange.beginningCode, (unsigned long)self.acceptableStatusCodeRange.endingCode];
     return description;
 }
 

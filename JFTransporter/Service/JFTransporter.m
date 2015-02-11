@@ -104,7 +104,7 @@
             _transportable = operation.request.transportable;
             [JFObjectModelMapping mapResponseObject:response.JSONObject toTransportable:&_transportable];
         } else {
-            NSString* description = [NSString stringWithFormat:@"Response status code is not within the acceptable range. Status code was %li", response.statusCode];
+            NSString* description = [NSString stringWithFormat:@"Response status code is not within the acceptable range. Status code was %li", (long)response.statusCode];
             error = [NSError errorWithDomain:NSRangeException code:9867 userInfo:@{NSLocalizedDescriptionKey: description}];
         }
         completionHandler(_transportable, error);
