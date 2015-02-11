@@ -77,10 +77,15 @@
 
 - (NSManagedObject<JFTransportable>*)existingObjectWithPredicateFormat:(NSString*)predicateFormat forEntityName:(NSString*)entityName
 {
+    return [self existingObjectWithPredicateFormat:predicateFormat forEntityName:entityName inMOC:self.privateContext];
+}
+
+- (NSManagedObject<JFTransportable>*)existingObjectWithPredicateFormat:(NSString*)predicateFormat forEntityName:(NSString*)entityName inMOC:(NSManagedObjectContext*)moc
+{
     __block NSManagedObject<JFTransportable>* object;
-    [self.privateContext performBlockAndWait:^{
+    [moc performBlockAndWait:^{
         NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-        NSEntityDescription *entity = [NSEntityDescription entityForName:entityName inManagedObjectContext:self.privateContext];
+        NSEntityDescription *entity = [NSEntityDescription entityForName:entityName inManagedObjectContext:moc];
         [fetchRequest setEntity:entity];
 
         NSPredicate *predicate = [NSPredicate predicateWithFormat:predicateFormat];
@@ -89,7 +94,7 @@
         fetchRequest.fetchBatchSize = 1;
         fetchRequest.fetchLimit = 1;
         
-        NSArray *fetchedObjects = [self.privateContext executeFetchRequest:fetchRequest error:nil];
+        NSArray *fetchedObjects = [moc executeFetchRequest:fetchRequest error:nil];
         if (fetchedObjects.count == 1) {
             object = fetchedObjects.firstObject;
         }

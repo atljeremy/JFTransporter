@@ -154,7 +154,12 @@ id JFObjectModelMappingManagedObjectCollection(NSString* __ENTITY_NAME__, Class 
                     [predicateFormat replaceOccurrencesOfString:key withString:value options:NSCaseInsensitiveSearch range:NSMakeRange(0, predicateFormat.length)];
                 }];
                 
-                managedObject = [JFDataManager.sharedManager existingObjectWithPredicateFormat:predicateFormat forEntityName:entityName];
+                if ([_transportable isKindOfClass:[NSManagedObject class]]) {
+                    NSManagedObjectContext* context = ((NSManagedObject*)_transportable).managedObjectContext;
+                    managedObject = [JFDataManager.sharedManager existingObjectWithPredicateFormat:predicateFormat forEntityName:entityName inMOC:context];
+                } else {
+                    managedObject = [JFDataManager.sharedManager existingObjectWithPredicateFormat:predicateFormat forEntityName:entityName];
+                }
             }
             
             if (!managedObject) {
